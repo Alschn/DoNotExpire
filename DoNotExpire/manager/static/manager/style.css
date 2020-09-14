@@ -1,0 +1,13 @@
+@font-face {
+    font-family: 'Diablo Heavy';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Diablo Heavy'), url('diablo.woff') format('woff');
+}
+
+*
+{
+    padding: 0;
+    margin: 0;
+    font-family: 'Diablo Heavy';
+}
