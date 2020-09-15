@@ -14,7 +14,7 @@ Should you not perm your character and update the info on website, you will be s
 
 If you keep forgetting to sync your Diablo 2 accounts state with website data, create a simple script to open both your browser with this website and Diablo 2 game instance at the same time. This way you will most likely remember to update the dates.
 
-## Instalation (dev)
+## Installation (dev)
 git clone https://github.com/Alschn/CoreRepetition.git  
 
     cd REPO_PATH/DoNotExpire  
