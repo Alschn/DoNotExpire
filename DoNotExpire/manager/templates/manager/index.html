@@ -3,16 +3,61 @@
 
 
 {% block main %}
-
+<div class="main">
     <div class="container mt-5">
         {% if not user.is_authenticated %}
         <p>Log in first to access our website. <a href="{% url 'login' %}">Sign in</a></p>
         <p>Do not have an account? <a href="{% url 'register' %}">Sign up</a></p>
 
         {% else %}
+        
         <p>Hi, {{ user.username }}</p>
         <a href="{% url 'logout' %}">Logout</a>
         {% endif%}
     </div>
 
+    <div class="container mt-5">
+        {% if user.is_authenticated and user.profile.accounts.all %}
+            {% for account in user.profile.accounts.all %}
+                <h2>{{ account }}:</h2>
+                <div class="row">
+                {% for char in account.chars.all %}
+                    {% if forloop.counter0|divisibleby:2 and forloop.conter0 != 0 %}
+                        <div class="col border border-primary pb-5">
+                            {{ char.name }}<br>
+                            {{ char.char_class }} {{ char.level }}
+                        </div>
+                    {% else %}
+                        <div class="col border border-success" >
+                            {{ char.name }}<br>
+                            {{ char.char_class }} {{ char.level }}
+                        </div>
+                        <div class="w-100"></div>
+                    {% endif %}
+                {% endfor %}
+
+                <!-- JUST FOR TESTS -->
+                <div class="col border border-primary pb-5" >next</div>
+                <div class="col border border-success" >next</div>
+                <div class="w-100"></div>
+
+                <div class="col border border-primary pb-5" >next</div>
+                <div class="col border border-success" >next</div>
+                <div class="w-100"></div>
+
+                <div class="col border border-primary pb-5" >next</div>
+                <div class="col border border-success" >next</div>
+                <div class="w-100"></div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col button-box"><button>Create Character</button></div> 
+                    <div class="col button-box"><button>Delete Character</button></div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+
+</div>
 {% endblock main %}

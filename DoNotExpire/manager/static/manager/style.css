@@ -10,6 +10,11 @@
     padding: 0;
     margin: 0;
     font-family: 'Diablo Heavy';
+    color: rgb(237, 209, 0);
+}
+
+body {
+    background-color: rgb(70, 69, 69);
 }
 
 .content-section {
@@ -19,4 +24,31 @@
     border: 1px solid #dddddd;
     border-radius: 3px;
     margin-bottom: 20px;
+}
+
+.button-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 25px;
+}
+
+button {
+    color: black;
+    width: 50%;
+    font-size: 1.5em;
+}
+
+
+a {
+    color: white;
+    font-weight: 600;
+}
+
+a:hover {
+    color: red;
+    text-decoration: none;
+    transition: all 0.5s;
 }
