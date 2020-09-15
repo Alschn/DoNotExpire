@@ -1,4 +1,14 @@
 from django.contrib import admin
 from .models import Profile
+from DoNotExpire.manager.models import Account
 
-admin.site.register(Profile)
+
+class AccountsInline(admin.TabularInline):
+    model = Account
+
+class ProfilesAdmin(admin.ModelAdmin):
+    inlines = [
+        AccountsInline,
+    ]
+
+admin.site.register(Profile, ProfilesAdmin)
