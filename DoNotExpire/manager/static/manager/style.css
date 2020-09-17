@@ -10,11 +10,11 @@
     padding: 0;
     margin: 0;
     font-family: 'Diablo Heavy';
-    color: rgb(237, 209, 0);
+    color: rgb(209, 185, 0);
 }
 
 body {
-    background-color: rgb(70, 69, 69);
+    background-color: rgb(36, 36, 36);
 }
 
 .content-section {
@@ -35,7 +35,7 @@ body {
     padding-top: 25px;
 }
 
-button {
+.btn-char {
     color: black;
     width: 50%;
     font-size: 1.5em;
@@ -51,4 +51,23 @@ a:hover {
     color: red;
     text-decoration: none;
     transition: all 0.5s;
+}
+
+.hardcore {
+    color: red !important;
+}
+
+.char-info {
+    color: white;
+}
+
+.char-data {
+    padding-left: 125px;
+}
+
+@media (min-width: 766px) {
+    .container-main {
+        padding-left: 125px;
+        padding-right: 125px
+    }
 }
