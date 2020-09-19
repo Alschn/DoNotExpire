@@ -14,7 +14,12 @@
 }
 
 body {
-    background-color: rgb(36, 36, 36);
+    /* background-color: rgb(24, 23, 23); */
+    background-color: black;
+}
+
+.col {
+    padding: 0;
 }
 
 .content-section {
@@ -27,20 +32,25 @@ body {
 }
 
 .button-box {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-left: auto;
-    margin-right: auto;
-    padding-top: 25px;
+    padding-top: 5px;
 }
 
 .btn-char {
     color: black;
-    width: 50%;
+    background-color: #464646;
     font-size: 1.5em;
+    padding: 2px 15px 2px 15px;
+    margin-left: 4px;
+    margin-right: 4px;
+    border: 2px solid rgb(209, 185, 0);;
 }
 
+.btn-update {
+    color: white;
+    background-color: black;
+    border: 0.5px solid rgb(38, 36, 36);
+    padding: 1px 2px 1px 2px;
+}
 
 a {
     color: white;
@@ -55,6 +65,15 @@ a:hover {
 
 .hardcore {
     color: red !important;
+}
+
+.expansion {
+    color: lime
+}
+
+.char-name-label {
+    justify-content: center;
+    padding: 7px 0 7px 0;
 }
 
 .char-info {

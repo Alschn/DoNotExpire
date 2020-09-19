@@ -9,19 +9,21 @@
 
         {% else %}
         
-        <p>Hi, {{ user.username }} <a class="ml-3" href="{% url 'logout' %}">Logout</a></p>
+        <p>Hi, {{ user.username }} <a class="float-right" href="{% url 'logout' %}">Logout</a></p>
         
         {% endif%}
     </div>
 
     <div class="container container-main mt-5">
-        {% if user.is_authenticated and user.profile.accounts.all %}
-            {% for account in user.profile.accounts.all %}
-                <h2>{{ account }}:</h2>
+        {% if user.is_authenticated and user_accounts %}
+            {% for account in user_accounts %}
+                <h2 class="mt-5">{{ account }}:</h2>
+
+                <div class="row border border-warning char-name-label" id="char-name-label"><h2></h2></div>
                 <div class="row">
                 {% for char in account.chars.all %}
                     {% if forloop.counter0|divisibleby:2 and forloop.conter0 != 0 %}
-                        <div class="col border border-warning pb-5">
+                        <div class="col border border-warning pb-5 col-char">
                             <div class="char-img"></div>
 
                             <div class="char-data">
@@ -34,13 +36,25 @@
                                 <span class="char-info">Level {{ char.level }} {{ char.char_class }}</span><br>
 
                                 {% if char.expansion == True %}
-                                <span style='color: lime'>expansion character</span>
+                                <span class="expansion">expansion character</span>
                                 {% endif %}
+
+                                {% if char.last_visited %}
+                                <br>
+                                    {{ char.last_visited }} <br>
+                                    <span class="char-info"></span>
+                                {% endif %}
+
+                                <br>
+                                <form action="{% url 'update-date' name=char.name %}" method="POST">
+                                    {% csrf_token %}
+                                    <button class="btn-update" type="submit" name="update_date">Update</button>
+                                </form>
                             </div>
 
                         </div>
                     {% else %}
-                        <div class="col border border-warning" >
+                        <div class="col border border-warning col-char" >
 
                             <div class="char-img"></div>
 
@@ -54,8 +68,20 @@
                                 <span class="char-info">Level {{ char.level }} {{ char.char_class }}</span><br>
                             
                                 {% if char.expansion == True %}
-                                <span style='color: lime'>expansion character</span>
+                                <span class="expansion">expansion character</span>
                                 {% endif %}
+
+                                {% if char.last_visited %}
+                                    <br>
+                                    {{ char.last_visited }} <br>
+                                    <span class="char-info"></span>
+                                {% endif %}
+                                <br>
+
+                                <form action="{% url 'update-date' name=char.name %}" method="POST">
+                                    {% csrf_token %}
+                                    <button class="btn-update" type="submit" name="update_date">Update</button>
+                                </form>
                             </div>
 
                         </div>
@@ -78,9 +104,17 @@
                 <div class="w-100"></div> {% endcomment %}
                 </div>
 
-                <div class="row mt-2">
-                    <div class="col button-box"><button class="btn-char">Create Character</button></div> 
-                    <div class="col button-box"><button class="btn-char">Delete Character</button></div>
+                <div class="row border border-warning">
+                    <div class="col button-box">
+                        <form action="{% url 'create-char' %}" method="POST">
+                        <button class="btn-char float-left">Create New<br>Character</button>
+                        </form>
+                    </div> 
+                    <div class="col button-box">
+                        <form action="{% url 'delete-char' %}" method="POST">
+                        <button class="btn-char float-right">Delete <br>Character</button>
+                        </form>
+                    </div>
                 </div>
             {% endfor %}
         {% endif %}
