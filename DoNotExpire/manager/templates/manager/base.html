@@ -20,5 +20,9 @@
     {% block main %}
     {% endblock main %}
     </div>
+
+    {% block additional_js %}
+    <script type="text/javascript" src="{% static 'manager/index.js' %}"></script>
+    {% endblock additional_js %}
 </body>
 </html>
