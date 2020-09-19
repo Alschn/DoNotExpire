@@ -1,6 +1,12 @@
 {% extends 'manager/base.html' %}
 
 {% block main %}
-<a href="{% url 'home' %}">Exit</a>
-<a href="{% url 'home' %}">Confirm</a>
+<div class="container container-main mt-5">
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ a_form.as_p }}
+        <button><a href="{% url 'home' %}">Exit</a></button>
+        <button type="submit">Confirm</button>   
+    </form>
+</div>
 {% endblock main %}

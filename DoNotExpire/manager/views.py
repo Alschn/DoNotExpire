@@ -23,17 +23,17 @@ def create_char(request):
             return redirect('home')
     else:
         c_form = CreateCharacterForm()
-    return render(request, 'manager/create_char.html')
+    return render(request, 'manager/create_char.html', {"c_form": c_form})
 
 
 def create_account(request):
     if request.method == "POST":
-        c_form = CreateAccountForm(request.POST)
-        if c_form.is_valid():
+        a_form = CreateAccountForm(request.POST)
+        if a_form.is_valid():
             return redirect('home')
     else:
-        c_form = CreateAccountForm()
-    return render(request, 'manager/create_acc.html')
+        a_form = CreateAccountForm()
+    return render(request, 'manager/create_account.html', {"a_form": a_form})
 
 
 def update_date(request, name):

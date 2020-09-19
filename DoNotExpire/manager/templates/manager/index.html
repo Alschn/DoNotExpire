@@ -10,6 +10,8 @@
         {% else %}
         
         <p>Hi, {{ user.username }} <a class="float-right" href="{% url 'logout' %}">Logout</a></p>
+
+        <p>Add new account <a href="{% url 'create-account' %}">Click here</a></p>
         
         {% endif%}
     </div>
@@ -78,7 +80,7 @@
                                 {% endif %}
                                 <br>
 
-                                <form action="{% url 'update-date' name=char.name %}" method="POST">
+                                <form action="{% url 'update-date' name=account.name %}" method="POST">
                                     {% csrf_token %}
                                     <button class="btn-update" type="submit" name="update_date">Update</button>
                                 </form>
@@ -107,11 +109,13 @@
                 <div class="row border border-warning">
                     <div class="col button-box">
                         <form action="{% url 'create-char' %}" method="POST">
+                        {% csrf_token %}
                         <button class="btn-char float-left">Create New<br>Character</button>
                         </form>
                     </div> 
                     <div class="col button-box">
                         <form action="{% url 'delete-char' %}" method="POST">
+                        {% csrf_token %}
                         <button class="btn-char float-right">Delete <br>Character</button>
                         </form>
                     </div>
