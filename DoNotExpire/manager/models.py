@@ -33,7 +33,7 @@ class Account(models.Model):
     def save(self, *args, **kwargs):
         # something like this to limit character count per account?
         max_char_count_per_acc = 16
-        if self.account.chars.all().count() >= max_char_count_per_acc:
+        if self.chars.all().count() >= max_char_count_per_acc:
             raise ValidationError(
                 'You can have up to 16 characters per account in Diablo II.'
             )
@@ -57,6 +57,8 @@ class Character(models.Model):
     acc = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='chars')
     last_visited = models.DateTimeField(null=True, blank=True)
     expired = models.BooleanField(default=False, null=True, blank=True)
+    expansion = models.BooleanField(default=True, null=True, blank=True)
+    hardcore = models.BooleanField(default=False, null=True, blank=True)
 
     def __str__(self):
         return f"{self.name}: {self.char_class} {self.level}lvl"

@@ -1,59 +1,119 @@
 {% extends 'manager/base.html' %}
 
-
-
 {% block main %}
 <div class="main">
-    <div class="container mt-5">
+
+    <div class="container container-main">
         {% if not user.is_authenticated %}
         <p>Log in first to access our website. <a href="{% url 'login' %}">Sign in</a></p>
         <p>Do not have an account? <a href="{% url 'register' %}">Sign up</a></p>
 
         {% else %}
         
-        <p>Hi, {{ user.username }}</p>
-        <a href="{% url 'logout' %}">Logout</a>
-        {% endif%}
-    </div>
+        <p>Hi, {{ user.username }} <a class="float-right" href="{% url 'logout' %}">Logout</a></p>
 
-    <div class="container mt-5">
-        {% if user.is_authenticated and user.profile.accounts.all %}
-            {% for account in user.profile.accounts.all %}
-                <h2>{{ account }}:</h2>
-                <div class="row">
+        <p>Add new account <a href="{% url 'create-account' %}" style="color:white">Click here</a></p>
+        
+        {% endif%}
+
+        {% if user.is_authenticated and user_accounts %}
+            {% for account in user_accounts %}
+            <div class="mt-5">
+            <span class="account-header">
+                {{ account }}: 
+                <a class="float-right del-acc" href="{% url 'delete-acc' pk=account.pk %}">Delete Account</a>
+            </span>
+                
+                <div class="row border border-warning char-name-label" id="char-name-label"><h2>placeholder</h2></div>
+                <div class="row border border-warning">
                 {% for char in account.chars.all %}
                     {% if forloop.counter0|divisibleby:2 and forloop.conter0 != 0 %}
-                        <div class="col border border-primary pb-5">
-                            {{ char.name }}<br>
-                            {{ char.char_class }} {{ char.level }}
+                        <div class="col border border-warning col-char">
+                            <div class="char-img"></div>
+
+                            <div class="char-data">
+                                {% if char.hardcore == True %}
+                                    <span class="hardcore">{{ char.name }}</span><br>
+                                {% else %}
+                                    {{ char.name }}<br>
+                                {% endif %}
+                
+                                <span class="char-info">Level {{ char.level }} {{ char.char_class }}</span><br>
+
+                                {% if char.expansion == True %}
+                                    <span class="expansion">expansion character</span>
+                                {% endif %}
+
+                                {% if char.last_visited %}
+                                <br>
+                                    {{ char.last_visited }} <br>
+                                    <span class="char-info">Expires in X days</span>
+                                {% endif %}
+
+                                <br>
+                                <form action="{% url 'update-date' name=char.name %}" method="POST">
+                                    {% csrf_token %}
+                                    <button class="btn-update" type="submit" name="update_date">Update</button>
+                                </form>
+                            </div>
+
                         </div>
                     {% else %}
-                        <div class="col border border-success" >
-                            {{ char.name }}<br>
-                            {{ char.char_class }} {{ char.level }}
+                        <div class="col border border-warning col-char" >
+
+                            <div class="char-img"></div>
+
+                            <div class="char-data">
+                                {% if char.hardcore == True %}
+                                    <span class="hardcore">{{ char.name }}</span><br>
+                                {% else %}
+                                    {{ char.name }}<br>
+                                {% endif %}
+
+                                <span class="char-info">Level {{ char.level }} {{ char.char_class }}</span><br>
+                            
+                                {% if char.expansion == True %}
+                                    <span class="expansion">expansion character</span>
+                                {% endif %}
+
+                                {% if char.last_visited %}
+                                    <br>
+                                    {{ char.last_visited }} <br>
+                                    <span class="char-info">Expires in X days</span>
+                                {% endif %}
+                                <br>
+
+                                <form action="{% url 'update-date' name=account.name %}" method="POST">
+                                    {% csrf_token %}
+                                    <button class="btn-update" type="submit" name="update_date">Update</button>
+                                </form>
+                            </div>
+
                         </div>
+
                         <div class="w-100"></div>
                     {% endif %}
                 {% endfor %}
 
-                <!-- JUST FOR TESTS -->
-                <div class="col border border-primary pb-5" >next</div>
-                <div class="col border border-success" >next</div>
-                <div class="w-100"></div>
-
-                <div class="col border border-primary pb-5" >next</div>
-                <div class="col border border-success" >next</div>
-                <div class="w-100"></div>
-
-                <div class="col border border-primary pb-5" >next</div>
-                <div class="col border border-success" >next</div>
-                <div class="w-100"></div>
                 </div>
 
-                <div class="row mt-2">
-                    <div class="col button-box"><button>Create Character</button></div> 
-                    <div class="col button-box"><button>Delete Character</button></div>
+                <div class="row border border-warning">
+                    <div class="col button-box">
+                        <form action="{% url 'create-char' account.name %}" method="POST">
+                        {% csrf_token %}
+                        <button class="btn-char float-left">Create New<br>Character</button>
+                        </form>
+                    </div> 
+
+
+                    <div class="col button-box">
+                        <form action="" method="POST">
+                        {% csrf_token %}
+                        <button class="btn-char float-right">Delete <br>Character</button>
+                        </form>
+                    </div>
                 </div>
+            </div>
             {% endfor %}
         {% endif %}
     </div>

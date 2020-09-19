@@ -1,0 +1,12 @@
+{% extends 'manager/base.html' %}
+
+{% block main %}
+<div class="container container-main mt-5">
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ c_form.as_p }}
+        <button class="btn-char"><a href="{% url 'home' %}">Exit</a></button>
+        <button class="btn-char" type="submit">Confirm</button>   
+    </form>
+</div>
+{% endblock main %}
