@@ -66,6 +66,11 @@ a:hover {
     color: inherit;
 }
 
+.account-box {
+    margin-top: 30px;
+    margin-bottom: 200px;
+}
+
 .del-acc, .del-acc:hover {
     color: red;
 }
@@ -88,7 +93,18 @@ a:hover {
 }
 
 .char-data {
-    padding-left: 125px;
+    padding-top: 10px;
+}
+
+.char-img {
+    height: 100%;
+    width: 30%;
+    float: left;
+}
+
+.char-img > img {
+    padding: 30px;
+    height: 100%;
 }
 
 
@@ -111,5 +127,10 @@ a:hover {
 
     .account-header {
         font-size: 18px;
+    }
+
+    .char-img > img {
+        padding: 20px 15px 15px 15px;
+        height: 70%;
     }
 }

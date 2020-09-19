@@ -16,20 +16,28 @@
         
         {% endif%}
 
+        {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+              </div>
+            {% endfor %}
+        {% endif %}
+
         {% if user.is_authenticated and user_accounts %}
             {% for account in user_accounts %}
-            <div class="mt-5">
-            <span class="account-header">
-                {{ account }}: 
-                <a class="float-right del-acc" href="{% url 'delete-acc' pk=account.pk %}">Delete Account</a>
-            </span>
+            <div class="account-box">
+                <span class="account-header">
+                    {{ account }}: 
+                    <a class="float-right del-acc" href="{% url 'delete-acc' pk=account.pk %}">Delete Account</a>
+                </span>
                 
                 <div class="row border border-warning char-name-label" id="char-name-label"><h2>placeholder</h2></div>
                 <div class="row border border-warning">
                 {% for char in account.chars.all %}
                     {% if forloop.counter0|divisibleby:2 and forloop.conter0 != 0 %}
                         <div class="col border border-warning col-char">
-                            <div class="char-img"></div>
+                            <div class="char-img"><img src="{{ char.class_image }}"></div>
 
                             <div class="char-data">
                                 {% if char.hardcore == True %}
@@ -41,27 +49,34 @@
                                 <span class="char-info">Level {{ char.level }} {{ char.char_class }}</span><br>
 
                                 {% if char.expansion == True %}
-                                    <span class="expansion">expansion character</span>
+                                    <span class="expansion">expansion character</span><br>
                                 {% endif %}
 
                                 {% if char.last_visited %}
-                                <br>
-                                    {{ char.last_visited }} <br>
-                                    <span class="char-info">Expires in X days</span>
+                                    {% if char.expired != True %}
+                                        {% comment %} <br>
+                                        {{ char.last_visited }} <br> {% endcomment %}
+                                        <span class="char-info">Expires in {{ char.expires }} days</span>
+                                    {% else %}
+                                        <br>
+                                        <span class="hardcore">Character expired</span>
+                                        <br>
+                                    {% endif %}
                                 {% endif %}
-
                                 <br>
+                                {% if char.expired != True %}
                                 <form action="{% url 'update-date' name=char.name %}" method="POST">
                                     {% csrf_token %}
                                     <button class="btn-update" type="submit" name="update_date">Update</button>
                                 </form>
+                                {% endif %}
                             </div>
 
                         </div>
                     {% else %}
                         <div class="col border border-warning col-char" >
 
-                            <div class="char-img"></div>
+                            <div class="char-img"><img src="{{ char.class_image }}"></div>
 
                             <div class="char-data">
                                 {% if char.hardcore == True %}
@@ -73,20 +88,27 @@
                                 <span class="char-info">Level {{ char.level }} {{ char.char_class }}</span><br>
                             
                                 {% if char.expansion == True %}
-                                    <span class="expansion">expansion character</span>
+                                    <span class="expansion">expansion character</span><br>
                                 {% endif %}
 
                                 {% if char.last_visited %}
-                                    <br>
-                                    {{ char.last_visited }} <br>
-                                    <span class="char-info">Expires in X days</span>
+                                    {% if char.expired != True %}
+                                        {% comment %} <br>
+                                        {{ char.last_visited }} <br> {% endcomment %}
+                                        <span class="char-info">Expires in {{ char.expires }} days</span>
+                                    {% else %}
+                                        <br>
+                                        <span class="hardcore">Character expired</span>
+                                        <br>
+                                    {% endif %}
                                 {% endif %}
                                 <br>
-
-                                <form action="{% url 'update-date' name=account.name %}" method="POST">
+                                {% if char.expired != True %}
+                                <form action="{% url 'update-date' name=char.name %}" method="POST">
                                     {% csrf_token %}
                                     <button class="btn-update" type="submit" name="update_date">Update</button>
                                 </form>
+                                {% endif %}
                             </div>
 
                         </div>

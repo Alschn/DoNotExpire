@@ -8,6 +8,9 @@ from django.core.validators import (
     FileExtensionValidator
 )
 from DoNotExpire.profiles.models import Profile
+from datetime import datetime, timedelta
+from django.utils import timezone
+import os
 
 
 alphanumeric = RegexValidator(r'^[0-9a-zA-Z.-]*', 'Account name should consist of alphanumerics and .- signs')
@@ -66,6 +69,11 @@ class Character(models.Model):
     def get_class_image(self):
         for char_choice in self.CLASS_CHOICES:
             if self.char_class in char_choice:
-                pic_name = str(self.char_class + ".jpg")
+                pic_name = os.path.join("/media", str(self.char_class + ".gif"))
                 return pic_name
         return None
+
+    def expires(self):
+        expiration_date = self.last_visited + timedelta(days=60)
+        days_until = expiration_date - timezone.now()
+        return days_until.days
