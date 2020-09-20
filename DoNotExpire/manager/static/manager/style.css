@@ -27,9 +27,14 @@ body {
 }
 
 .row.chars-box {
-    /* height: 620px; */
+    max-height: 620px;
     overflow-y: scroll;
-    /* to be implemented somehow */
+    /* This works for now but there are issues:
+    1. char-box doesn't look good on 620px height because of boostrap vertical stretch
+    2. scroll could be customized and look like the one from Diablo II 
+    maybe JS or Jquery can be used there to fix this
+    */
+    
 }
 
 .account-header {
