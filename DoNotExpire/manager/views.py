@@ -10,7 +10,10 @@ from .models import Account, Character
 
 
 def home(request):
-    user_accounts = request.user.profile.accounts.all()
+    try:
+        user_accounts = request.user.profile.accounts.all()
+    except AttributeError:
+        user_accounts = None
 
     context = {
         'user_accounts': user_accounts,
