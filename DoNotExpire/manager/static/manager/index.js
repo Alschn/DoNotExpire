@@ -1,12 +1,6 @@
-function changeText(text)
+function changeText(text, id)
 {
-    var display = document.getElementById('char-name-label');
-    display.innerHTML = "";
-    display.innerHTML = text;
-}
-  function changeback(text)
-{
-    var display = document.getElementById('char-name-label');
+    var display = document.getElementById('char-name-label-'+id);
     display.innerHTML = "";
     display.innerHTML = text;
 }

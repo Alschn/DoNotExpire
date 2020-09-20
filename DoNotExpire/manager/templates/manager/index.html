@@ -32,11 +32,11 @@
                     <a class="float-right del-acc" href="{% url 'delete-acc' pk=account.pk %}">Delete Account</a>
                 </span>
                 
-                <div class="row border border-warning char-name-label"><h2 id="char-name-label">{{ account.name }}</h2></div>
-                <div class="row border border-warning">
+                <div class="row custom-border-header char-name-label"><h2 id="char-name-label-{{account.id}}">{{ account.name }}</h2></div>
+                <div class="row custom-border">
                 {% for char in account.chars.all %}
                     {% if forloop.counter0|divisibleby:2 and forloop.conter0 != 0 %}
-                        <div class="col col-char" onmouseover="changeText('{{ char.name }}')" onmouseout="changeback('{{ account.name }}')">
+                        <div class="col col-char" onmouseover="changeText('{{ char.name }}', '{{account.id}}')" onmouseout="changeText('{{ account.name }}', '{{account.id}}')">
                             <div class="char-img"><img src="{{ char.class_image }}"></div>
 
                             <div class="char-data">
@@ -74,7 +74,7 @@
 
                         </div>
                     {% else %}
-                        <div class="col col-char" onmouseover="changeText('{{ char.name }}')" onmouseout="changeback('{{ account.name }}')">
+                        <div class="col col-char" onmouseover="changeText('{{ char.name }}', '{{account.id}}')" onmouseout="changeText('{{ account.name }}', '{{account.id}}')">
 
                             <div class="char-img"><img src="{{ char.class_image }}"></div>
 
@@ -119,7 +119,7 @@
 
                 </div>
 
-                <div class="row border border-warning">
+                <div class="row custom-border-bottom">
                     <div class="col button-box">
                         <form action="{% url 'create-char' account.name %}" method="POST">
                         {% csrf_token %}

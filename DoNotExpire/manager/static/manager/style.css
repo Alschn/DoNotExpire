@@ -10,11 +10,10 @@
     padding: 0;
     margin: 0;
     font-family: 'Diablo Heavy';
-    color: rgb(209, 185, 0);
+    color: rgb(181, 161, 15);
 }
 
 body {
-    /* background-color: rgb(24, 23, 23); */
     background-color: black;
 }
 
@@ -36,18 +35,17 @@ body {
     margin-bottom: 20px;
 }
 
-.button-box {
-    padding-top: 5px;
-}
-
 .btn-char {
     color: black;
-    background: linear-gradient(90deg, rgba(138,138,138,1) 0%, rgba(167,167,167,1) 50%, rgba(138,138,138,1) 81%);;
     font-size: 1.5em;
     padding: 2px 15px 2px 15px;
-    margin-left: 4px;
-    margin-right: 4px;
-    border: 2px solid rgb(209, 185, 0);;
+
+    border-width: 5px 32px 5px 32px;
+    border-style: solid;
+    border-image-source: url(../../../../media/diablo_button.jpg) !important;
+    border-image-slice: 5 32 5 32 fill;
+    border-image-repeat: stretch;
+    background: none;
 }
 
 .btn-update {
@@ -83,14 +81,39 @@ a:hover {
     color: lime
 }
 
-.col-char:hover {
-    border: 0.5px solid rgb(209, 185, 0);
+.custom-border {
+    border-width: 1px 1px 13px 1px;
+    border-style: solid;
+    border-image-source: url(../../../../media/diablo_border.jpg);
+    border-image-slice: 1 1 13 1;
+}
+
+.custom-border-header {
+    border-width: 2px 62px 16px 62px;
+    border-style: solid;
+    border-image-source: url(../../../../media/diablo_header.jpg);
+    border-image-slice: 2 62 16 62;
+}
+
+.custom-border-bottom {
+    background: url(../../../../media/diablo_bottom.jpg);
+    background-repeat: no-repeat;
+    background-position: 8px;
+    background-size: 100%;
 }
 
 .char-name-label {
     justify-content: center;
-    padding: 7px 0 7px 0;
-    height: 55px;
+    padding: 12px 0 12px 0;
+    height: 80px;
+}
+
+.row {
+    background-color: rgb(4, 4, 4);
+}
+
+.col-char:hover {
+    border: 0.5px solid rgb(216, 206, 133);
 }
 
 .char-info {
@@ -128,6 +151,7 @@ a:hover {
 @media (max-width: 777px) {
     .char-data {
         padding-left: 80px;
+        font-size: 0.9em;
     }
 
     .account-header {
@@ -137,5 +161,10 @@ a:hover {
     .char-img > img {
         padding: 20px 15px 15px 15px;
         height: 70%;
+    }
+
+    .btn-char {
+        padding: 1px 5px 1px 5px;
+        font-size: 1.25em;
     }
 }
