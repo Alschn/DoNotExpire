@@ -5,13 +5,13 @@
 
     <div class="container container-main">
         {% if not user.is_authenticated %}
+        <div class="content-section">
         <p>Log in first to access our website. <a href="{% url 'login' %}">Sign in</a></p>
         <p>Do not have an account? <a href="{% url 'register' %}">Sign up</a></p>
-
+        </div>
         {% else %}
         
         <p>Hi, {{ user.username }} <a class="float-right" href="{% url 'logout' %}">Logout</a></p>
-
         <p>Add new account <a href="{% url 'create-account' %}" style="color:white">Click here</a></p>
         
         {% endif%}
@@ -33,7 +33,7 @@
                 </span>
                 
                 <div class="row custom-border-header char-name-label"><h2 id="char-name-label-{{account.id}}">{{ account.name }}</h2></div>
-                <div class="row custom-border">
+                <div class="row custom-border chars-box">
                 {% for char in account.chars.all %}
                     {% if forloop.counter0|divisibleby:2 and forloop.conter0 != 0 %}
                         <div class="col col-char" onmouseover="changeText('{{ char.name }}', '{{account.id}}')" onmouseout="changeText('{{ account.name }}', '{{account.id}}')">
@@ -54,8 +54,6 @@
 
                                 {% if char.last_visited %}
                                     {% if char.expired != True %}
-                                        {% comment %} <br>
-                                        {{ char.last_visited }} <br> {% endcomment %}
                                         <span class="char-info">Expires in {{ char.expires }} days</span>
                                     {% else %}
                                         <br>
@@ -93,8 +91,6 @@
 
                                 {% if char.last_visited %}
                                     {% if char.expired != True %}
-                                        {% comment %} <br>
-                                        {{ char.last_visited }} <br> {% endcomment %}
                                         <span class="char-info">Expires in {{ char.expires }} days</span>
                                     {% else %}
                                         <br>
