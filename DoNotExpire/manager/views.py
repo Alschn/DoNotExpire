@@ -3,13 +3,17 @@ from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import DeleteView
+from django.contrib import messages
 import datetime
 from .forms import CreateAccountForm, CreateCharacterForm
 from .models import Account, Character
 
 
 def home(request):
-    user_accounts = request.user.profile.accounts.all()
+    try:
+        user_accounts = request.user.profile.accounts.all()
+    except AttributeError:
+        user_accounts = None
 
     context = {
         'user_accounts': user_accounts,
@@ -28,6 +32,7 @@ def create_char(request, pk):
         if c_form.is_valid():
             instance = c_form.save(commit=False)
             instance.acc = Account.objects.get(name=pk)
+            instance.class_image = instance.get_class_image()
             instance.save()
             return redirect('home')
     else:
@@ -55,6 +60,11 @@ def update_date(request, name):
     """Updates character's last_visited datefield."""
     if request.method == "POST":
         char = Character.objects.get(name=name)
+        if char.last_visited and char.expires() < 0:
+            char.expired = True
+            char.save()
+            messages.error(request, f"{char.name} has expired :(")
+            return redirect('home')
         char.last_visited = datetime.datetime.now()
         char.save()
         return redirect('home')
