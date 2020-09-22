@@ -35,7 +35,7 @@
                 <div class="row custom-border-header char-name-label"><h2 id="char-name-label-{{account.id}}">{{ account.name }}</h2></div>
                 <div class="row custom-border chars-box">
                 {% for char in account.chars.all %}
-                    {% if forloop.counter0|divisibleby:2 and forloop.conter0 != 0 %}
+                    
                         <div class="col col-char clickable" onclick="changeText('{{ char.name }}', '{{account.id}}')" id="{{account.name}}">
                             <div class="char-img"><img src="{{ char.class_image }}"></div>
 
@@ -71,44 +71,8 @@
                             </div>
 
                         </div>
-                    {% else %}
-                        <div class="col col-char clickable" onclick="changeText('{{ char.name }}', '{{account.id}}')" id="{{account.name}}">
 
-                            <div class="char-img"><img src="{{ char.class_image }}"></div>
-
-                            <div class="char-data">
-                                {% if char.hardcore == True %}
-                                    <span class="hardcore">{{ char.name }}</span><br>
-                                {% else %}
-                                    {{ char.name }}<br>
-                                {% endif %}
-
-                                <span class="char-info">Level {{ char.level }} {{ char.char_class }}</span><br>
-                            
-                                {% if char.expansion == True %}
-                                    <span class="expansion">expansion character</span><br>
-                                {% endif %}
-
-                                {% if char.last_visited %}
-                                    {% if char.expired != True %}
-                                        <span class="char-info">Expires in {{ char.expires }} days</span>
-                                    {% else %}
-                                        <br>
-                                        <span class="hardcore">Character expired</span>
-                                        <br>
-                                    {% endif %}
-                                {% endif %}
-                                <br>
-                                {% if char.expired != True %}
-                                <form action="{% url 'update-date' name=char.name %}" method="POST">
-                                    {% csrf_token %}
-                                    <button class="btn-update" type="submit" name="update_date">Update</button>
-                                </form>
-                                {% endif %}
-                            </div>
-
-                        </div>
-
+                    {% if forloop.counter|divisibleby:2 %}
                         <div class="w-100"></div>
                     {% endif %}
                 {% endfor %}

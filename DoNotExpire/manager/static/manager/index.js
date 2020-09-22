@@ -15,7 +15,7 @@ function changeText(text, id)
 
 $(document).ready(function (){
     // get all char containers with a class
-    var charboxes = $('.clickable');
+    let charboxes = $('.clickable');
     charboxes.click(function() {
         // add border initially to the div where we clicked
         $(this).addClass('border-yellow')
@@ -23,7 +23,7 @@ $(document).ready(function (){
         let acc_id = $(this).attr("id");
         // get new querry only with 'local' chars
         query = "#" + acc_id + ".clickable"
-        var chars = $(query)
+        let chars = $(query)
         // clickable div within current scope
         chars.click(function() {
             chars.removeClass('border-yellow')
