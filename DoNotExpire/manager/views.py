@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.views.generic import DeleteView
 from django.contrib import messages
 import datetime
@@ -30,6 +31,11 @@ def create_char(request, pk):
     if request.method == "POST":
         c_form = CreateCharacterForm(request.POST)
         if c_form.is_valid():
+            if Account.objects.get(name=pk).chars.all().count() >= 16:
+                # maybe there will be just redirect to home and message to the user
+                raise ValidationError(
+                    'You can have up to 16 characters per account in Diablo II.'
+                )
             instance = c_form.save(commit=False)
             instance.acc = Account.objects.get(name=pk)
             instance.class_image = instance.get_class_image()
@@ -68,6 +74,21 @@ def update_date(request, name):
         char.last_visited = datetime.datetime.now()
         char.save()
         return redirect('home')
+
+
+def delete_char(request):
+    """Delete character working with a button.
+    There should be one more view to confirm that 
+    we want to delete the car (to be implemented)"""
+    if 'char_id' in request.POST:
+        try:
+            char = Character.objects.get(name=request.POST.get('char_id'))
+            char.delete()
+            messages.success(request, f"{char.name} from account {char.acc} has been deleted")
+        except ObjectDoesNotExist:
+            messages.warning(request, "Select a character to be deleted first!")
+            return redirect('home')
+    return redirect('home')
 
 
 class CharacterDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):

@@ -26,7 +26,7 @@
 
         {% if user.is_authenticated and user_accounts %}
             {% for account in user_accounts %}
-            <div class="account-box" id="'{{account.id}}'">
+            <div class="account-box">
                 <span class="account-header">
                     {{ account }}: 
                     <a class="float-right del-acc" href="{% url 'delete-acc' pk=account.pk %}">Delete Account</a>
@@ -36,7 +36,7 @@
                 <div class="row custom-border chars-box">
                 {% for char in account.chars.all %}
                     
-                        <div class="col col-char clickable" onclick="changeText('{{ char.name }}', '{{account.id}}')" id="{{account.name}}">
+                        <div class="col col-char clickable" onclick="changeText('{{ char.name }}', '{{account.id}}')" id="{{account.name}}" data-char="{{ char.name }}">
                             <div class="char-img"><img src="{{ char.class_image }}"></div>
 
                             <div class="char-data">
@@ -89,9 +89,10 @@
 
 
                     <div class="col button-box">
-                        <form action="" method="POST">
+                        <form action="{% url 'delete_char' %}" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="char_id" value="" id="{{ account.name }}">
                         {% csrf_token %}
-                        <button class="btn-char float-right">Delete <br>Character</button>
+                        <button class="btn-char float-right" type="submit">Delete <br>Character</button>
                         </form>
                     </div>
                 </div>

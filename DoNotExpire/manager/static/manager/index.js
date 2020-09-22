@@ -21,6 +21,11 @@ $(document).ready(function (){
         $(this).addClass('border-yellow')
         // get current account name
         let acc_id = $(this).attr("id");
+
+        // change Delete button hidden input value field
+        let delete_form = $("#"+acc_id+"[name=char_id]");
+        let char_name = $(this).attr("data-char")
+        $(delete_form).val(char_name)
         // get new querry only with 'local' chars
         query = "#" + acc_id + ".clickable"
         let chars = $(query)
