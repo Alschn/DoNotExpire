@@ -17,9 +17,23 @@ body {
     background-color: black;
 }
 
+.navbar-brand img {
+    height: 90px;
+}
+
 .col {
     padding: 0;
     max-width: 50%;
+}
+
+.row.chars-box {
+    max-height: 620px;
+    overflow-y: scroll;
+    /* This works for now but there are issues:
+    1. char-box doesn't look good on 620px height because of boostrap vertical stretch
+    2. scroll could be customized and look like the one from Diablo II 
+    maybe JS or Jquery can be used there to fix this
+    */
 }
 
 .account-header {
@@ -27,10 +41,10 @@ body {
 }
 
 .content-section {
-    margin-top: 20px;
-    background: #ffffff;
+    margin-top: 50px;
+    background: inherit;
     padding: 10px 20px;
-    border: 1px solid #dddddd;
+    border: 1px solid #ff1900;
     border-radius: 3px;
     margin-bottom: 20px;
 }
@@ -39,13 +53,17 @@ body {
     color: black;
     font-size: 1.5em;
     padding: 2px 15px 2px 15px;
-
+    /* Custom border */
     border-width: 5px 32px 5px 32px;
     border-style: solid;
-    border-image-source: url(../../../../media/diablo_button.jpg) !important;
+    border-image-source: url(/media/diablo_button.jpg);
     border-image-slice: 5 32 5 32 fill;
     border-image-repeat: stretch;
     background: none;
+}
+
+.btn-char-disabled {
+    border-image-source: url(/media/diablo_button_disabled.jpg) !important;
 }
 
 .btn-update {
@@ -84,19 +102,19 @@ a:hover {
 .custom-border {
     border-width: 1px 1px 13px 1px;
     border-style: solid;
-    border-image-source: url(../../../../media/diablo_border.jpg);
+    border-image-source: url(/media/diablo_border.jpg);
     border-image-slice: 1 1 13 1;
 }
 
 .custom-border-header {
     border-width: 2px 62px 16px 62px;
     border-style: solid;
-    border-image-source: url(../../../../media/diablo_header.jpg);
+    border-image-source: url(/media/diablo_header.jpg);
     border-image-slice: 2 62 16 62;
 }
 
 .custom-border-bottom {
-    background: url(../../../../media/diablo_bottom.jpg);
+    background: url(/media/diablo_bottom.jpg);
     background-repeat: no-repeat;
     background-position: 8px;
     background-size: 100%;
@@ -112,8 +130,13 @@ a:hover {
     background-color: rgb(4, 4, 4);
 }
 
-.col-char:hover {
-    border: 0.5px solid rgb(216, 206, 133);
+.clickable {
+    cursor: pointer;
+}
+
+.border-yellow {
+    /* Used in JQuery to highlight the selected char */
+    border: 0.5px solid rgb(216, 206, 133) !important;
 }
 
 .char-info {
@@ -148,7 +171,7 @@ a:hover {
     }
 }
 
-@media (max-width: 777px) {
+@media (max-width: 767px) {
     .char-data {
         padding-left: 80px;
         font-size: 0.9em;
@@ -160,7 +183,7 @@ a:hover {
 
     .char-img > img {
         padding: 20px 15px 15px 15px;
-        height: 70%;
+        height: 80%;
     }
 
     .btn-char {

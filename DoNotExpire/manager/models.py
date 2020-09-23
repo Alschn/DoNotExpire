@@ -33,15 +33,6 @@ class Account(models.Model):
     def __str__(self):
         return f"{self.name}  @{self.realm}"
 
-    def save(self, *args, **kwargs):
-        # something like this to limit character count per account?
-        max_char_count_per_acc = 16
-        if self.chars.all().count() >= max_char_count_per_acc:
-            raise ValidationError(
-                'You can have up to 16 characters per account in Diablo II.'
-            )
-        super().save(*args, **kwargs)
-
 
 class Character(models.Model):
     name = models.CharField(max_length=15, validators=[letters_only], unique=True)

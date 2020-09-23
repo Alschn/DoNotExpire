@@ -8,4 +8,5 @@ urlpatterns = [
     path('update_date/<str:name>/', manager_views.update_date, name='update-date'),
     path('delete/char/<int:pk>', manager_views.CharacterDeleteView.as_view(), name='delete-char'),
     path('delete/acc/<int:pk>', manager_views.AccountDeleteView.as_view(), name='delete-acc'),
+    path('delete/', manager_views.delete_char, name='delete_char')
 ]

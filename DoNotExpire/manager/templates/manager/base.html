@@ -16,13 +16,20 @@
 </head>
 
 <body>
-    <div class="container mt-5">
+<nav class="navbar navbar-expand-lg container container-main">
+  <a class="navbar-brand mr-auto ml-auto" href="{% url 'home' %}"><img src="/media/diablo_logo.gif"></a>
+</nav>
+
+    <div class="container">
     {% block main %}
     {% endblock main %}
     </div>
-
+    <!-- JQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  
     {% block additional_js %}
     <script type="text/javascript" src="{% static 'manager/index.js' %}"></script>
     {% endblock additional_js %}
+
 </body>
 </html>

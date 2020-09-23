@@ -5,13 +5,13 @@
 
     <div class="container container-main">
         {% if not user.is_authenticated %}
+        <div class="content-section">
         <p>Log in first to access our website. <a href="{% url 'login' %}">Sign in</a></p>
         <p>Do not have an account? <a href="{% url 'register' %}">Sign up</a></p>
-
+        </div>
         {% else %}
         
         <p>Hi, {{ user.username }} <a class="float-right" href="{% url 'logout' %}">Logout</a></p>
-
         <p>Add new account <a href="{% url 'create-account' %}" style="color:white">Click here</a></p>
         
         {% endif%}
@@ -33,10 +33,10 @@
                 </span>
                 
                 <div class="row custom-border-header char-name-label"><h2 id="char-name-label-{{account.id}}">{{ account.name }}</h2></div>
-                <div class="row custom-border">
+                <div class="row custom-border chars-box">
                 {% for char in account.chars.all %}
-                    {% if forloop.counter0|divisibleby:2 and forloop.conter0 != 0 %}
-                        <div class="col col-char" onmouseover="changeText('{{ char.name }}', '{{account.id}}')" onmouseout="changeText('{{ account.name }}', '{{account.id}}')">
+                    
+                        <div class="col col-char clickable" onclick="changeText('{{ char.name }}', '{{account.id}}')" id="{{account.name}}" data-char="{{ char.name }}">
                             <div class="char-img"><img src="{{ char.class_image }}"></div>
 
                             <div class="char-data">
@@ -54,47 +54,6 @@
 
                                 {% if char.last_visited %}
                                     {% if char.expired != True %}
-                                        {% comment %} <br>
-                                        {{ char.last_visited }} <br> {% endcomment %}
-                                        <span class="char-info">Expires in {{ char.expires }} days</span>
-                                    {% else %}
-                                        <br>
-                                        <span class="hardcore">Character expired</span>
-                                        <br>
-                                    {% endif %}
-                                {% endif %}
-                                <br>
-                                {% if char.expired != True %}
-                                <form action="{% url 'update-date' name=char.name %}" method="POST">
-                                    {% csrf_token %}
-                                    <button class="btn-update" type="submit" name="update_date">Update</button>
-                                </form>
-                                {% endif %}
-                            </div>
-
-                        </div>
-                    {% else %}
-                        <div class="col col-char" onmouseover="changeText('{{ char.name }}', '{{account.id}}')" onmouseout="changeText('{{ account.name }}', '{{account.id}}')">
-
-                            <div class="char-img"><img src="{{ char.class_image }}"></div>
-
-                            <div class="char-data">
-                                {% if char.hardcore == True %}
-                                    <span class="hardcore">{{ char.name }}</span><br>
-                                {% else %}
-                                    {{ char.name }}<br>
-                                {% endif %}
-
-                                <span class="char-info">Level {{ char.level }} {{ char.char_class }}</span><br>
-                            
-                                {% if char.expansion == True %}
-                                    <span class="expansion">expansion character</span><br>
-                                {% endif %}
-
-                                {% if char.last_visited %}
-                                    {% if char.expired != True %}
-                                        {% comment %} <br>
-                                        {{ char.last_visited }} <br> {% endcomment %}
                                         <span class="char-info">Expires in {{ char.expires }} days</span>
                                     {% else %}
                                         <br>
@@ -113,6 +72,7 @@
 
                         </div>
 
+                    {% if forloop.counter|divisibleby:2 %}
                         <div class="w-100"></div>
                     {% endif %}
                 {% endfor %}
@@ -123,15 +83,16 @@
                     <div class="col button-box">
                         <form action="{% url 'create-char' account.name %}" method="POST">
                         {% csrf_token %}
-                        <button class="btn-char float-left">Create New<br>Character</button>
+                        <button class="btn-char btn-char-create float-left" data-char-count="{{ account.chars.all.count }}">Create New<br>Character</button>
                         </form>
                     </div> 
 
 
                     <div class="col button-box">
-                        <form action="" method="POST">
+                        <form action="{% url 'delete_char' %}" method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
-                        <button class="btn-char float-right">Delete <br>Character</button>
+                        <input type="hidden" name="char_id" value="" id="{{ account.name }}">
+                        <button class="btn-char btn-char-delete btn-char-disabled float-right" data-acc="{{ account.name }}" type="submit" disabled>Delete <br>Character</button>
                         </form>
                     </div>
                 </div>
