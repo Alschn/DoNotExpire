@@ -5,13 +5,6 @@ function changeText(text, id)
     display.innerHTML = text;
 }
 
-// function enableDelete(char_id) {
-//     var delete_btn = document.getElementById('delete-btn-'+char_id)
-//     delete_btn.setAttribute("action", "")
-//     class_str = "{% url 'delete-char' " + char_id + " %}"
-//     delete_btn.setAttribute("action", class_str)
-// }
-
 
 $(document).ready(function (){
     // get all char containers with a class
@@ -26,6 +19,12 @@ $(document).ready(function (){
         let delete_form = $("#"+acc_id+"[name=char_id]");
         let char_name = $(this).attr("data-char")
         $(delete_form).val(char_name)
+
+        // Toggle delete button
+        let delete_btn = delete_form.next()  // takes next element in DOM which is button in this case
+        $(delete_btn).removeClass('btn-char-disabled')
+        $(delete_btn).attr('disabled', false)
+
         // get new querry only with 'local' chars
         query = "#" + acc_id + ".clickable"
         let chars = $(query)

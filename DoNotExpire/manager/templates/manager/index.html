@@ -83,16 +83,16 @@
                     <div class="col button-box">
                         <form action="{% url 'create-char' account.name %}" method="POST">
                         {% csrf_token %}
-                        <button class="btn-char float-left">Create New<br>Character</button>
+                        <button class="btn-char btn-char-enabled float-left">Create New<br>Character</button>
                         </form>
                     </div> 
 
 
                     <div class="col button-box">
                         <form action="{% url 'delete_char' %}" method="POST" enctype="multipart/form-data">
-                        <input type="hidden" name="char_id" value="" id="{{ account.name }}">
                         {% csrf_token %}
-                        <button class="btn-char float-right" type="submit">Delete <br>Character</button>
+                        <input type="hidden" name="char_id" value="" id="{{ account.name }}">
+                        <button class="btn-char btn-char-delete btn-char-disabled float-right" data-acc="{{ account.name }}" type="submit" disabled>Delete <br>Character</button>
                         </form>
                     </div>
                 </div>
