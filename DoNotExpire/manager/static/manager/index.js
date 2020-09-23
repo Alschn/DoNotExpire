@@ -1,12 +1,20 @@
-function changeText(text, id)
-{
+function changeText(text, id) {
     var display = document.getElementById('char-name-label-'+id);
     display.innerHTML = "";
     display.innerHTML = text;
 }
 
+// Get all the Create New Character buttons
+let create_btn = $(".btn-char-create");
+create_btn.each(function() {
+    // If there are 16 or more characters, disable the button
+    if (Number($(this).attr("data-char-count")) >= 16) {
+        $(this).attr("disabled", true)
+        $(this).addClass('btn-char-disabled')
+    }
+})
 
-$(document).ready(function (){
+$(document).ready(function () {
     // get all char containers with a class
     let charboxes = $('.clickable');
     charboxes.click(function() {
@@ -34,6 +42,4 @@ $(document).ready(function (){
             $(this).addClass('border-yellow')
         })
     })
-
 })
-

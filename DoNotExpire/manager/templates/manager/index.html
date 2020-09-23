@@ -83,7 +83,7 @@
                     <div class="col button-box">
                         <form action="{% url 'create-char' account.name %}" method="POST">
                         {% csrf_token %}
-                        <button class="btn-char btn-char-enabled float-left">Create New<br>Character</button>
+                        <button class="btn-char btn-char-create float-left" data-char-count="{{ account.chars.all.count }}">Create New<br>Character</button>
                         </form>
                     </div> 
 
