@@ -60,7 +60,7 @@ class Character(models.Model):
     def get_class_image(self):
         for char_choice in self.CLASS_CHOICES:
             if self.char_class in char_choice:
-                pic_name = str(self.char_class + ".gif")
+                pic_name = os.path.join("/", str(self.char_class + ".gif").lower())
                 return pic_name
         return None
 
