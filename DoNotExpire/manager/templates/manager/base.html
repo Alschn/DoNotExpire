@@ -10,15 +10,21 @@
     {% block css_links %}
     <link rel="stylesheet" href="{% static 'manager/style.css' %}">
     {% endblock css_links %}
+
+    {% block css_chars %}
+        <link rel="stylesheet" href="{% static 'manager/createChar.css' %}">
+    {% endblock css_chars %}
     <!-- Favicon -->
     <link rel="icon" href="{% static 'manager/diablo.ico' %}">
     <title>DoNotExpire</title>
 </head>
 
 <body>
+{% block nav_img %}
 <nav class="navbar navbar-expand-lg container container-main">
   <a class="navbar-brand mr-auto ml-auto" href="{% url 'home' %}"><img src="/media/diablo_logo.gif"></a>
 </nav>
+{% endblock nav_img %}
 
     <div class="container">
     {% block main %}
@@ -29,6 +35,7 @@
   
     {% block additional_js %}
     <script type="text/javascript" src="{% static 'manager/index.js' %}"></script>
+    <script type="text/javascript" src="{% static 'manager/createChar.js' %}"></script>
     {% endblock additional_js %}
 
 </body>
