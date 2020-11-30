@@ -48,6 +48,15 @@ body {
   margin-bottom: 20px;
 }
 
+.content-section.register {
+  margin-top: 0;
+}
+
+input,
+input:focus {
+  box-shadow: none !important;
+}
+
 .btn-char {
   color: black;
   font-size: 1.5em;
@@ -168,6 +177,30 @@ fieldset.form-group.centered {
 .btn-sign-in > .btn-char {
   width: 40%;
   height: 50px;
+}
+
+.modal-content {
+  background: linear-gradient(to top right, #030303 0%, #121212 100%);
+  border: 2px solid rgb(121, 109, 18);
+}
+
+.modal-body {
+  color: white !important;
+  text-align: center;
+  padding: 50px 5px 50px 5px;
+}
+
+.modal-buttons {
+  padding: 0 20px 10px 20px;
+  font-size: 12px;
+}
+
+button.btn-left {
+  float: left;
+}
+
+button.btn-right {
+  float: right;
 }
 
 /* MEDIA QUERRIES */

@@ -153,3 +153,8 @@ button > a:hover {
   text-decoration: none;
   color: inherit;
 }
+
+input, input:focus {
+  box-shadow: none !important;
+  background-color: black;
+}
