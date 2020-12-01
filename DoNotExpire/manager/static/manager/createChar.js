@@ -21,105 +21,96 @@ const paladin = document.getElementById("paladin");
 const sorceress = document.getElementById("sorceress");
 const druid = document.getElementById("druid");
 
+// Title and description displayed above
 const class_desc = document.getElementById("class-description");
 const class_name = document.getElementById("class-name");
 
 // forms div
 const char_form_popup = document.getElementById("char-form-popup");
-// forms
+// form's fields
 const id_char_class = document.getElementById("id_char_class");
 const id_level = document.getElementById("id_level");
 const id_expansion = document.getElementById("id_expansion");
 const id_hardcore = document.getElementById("id_hardcore");
-id_expansion.value = "true";
-id_hardcore.value = "false";
+
+// Initial values
+id_expansion.value = "true"; // initially expansion
+id_hardcore.value = "false"; // initially softcore
 
 const enablePopup = () => {
+  // Show class name (title), description and form
   class_name.style.visibility = "visible";
   class_desc.style.visibility = "visible";
   char_form_popup.style.visibility = "visible";
 };
 
+const changeCurrentChar = (char_name, char_desc) => {
+  class_desc.textContent = char_desc.toUpperCase(); // Set class description
+  class_name.textContent = char_name; // Set class name (title)
+  id_char_class.value = char_name; // Set form's char_class field
+  exp = document.getElementById("expansion");
+  char_name === "Assassin" || char_name === "Druid"
+    ? (exp.disabled = true)
+    : (exp.disabled = false);
+};
+
 document.addEventListener("DOMContentLoaded", function (event) {
-  // expansion checkbox
-  var expansion = document.querySelector("input[name=EXPANSION]");
+  var expansion = document.querySelector("input[name=EXPANSION]"); // expansion checkbox
   expansion.addEventListener("change", function (event) {
-    if (expansion.checked) {
-      id_expansion.value = "true";
-    } else {
-      id_expansion.value = "false";
-    }
+    // set expansion field to true/false if checked/not checked
+    id_expansion.checked
+      ? (id_expansion.value = "true")
+      : (id_expansion.value = "false");
   });
 });
 
 document.addEventListener("DOMContentLoaded", function (event) {
-  // hardcore checkbox
-  var hardcore = document.querySelector("input[name=HARDCORE]");
+  var hardcore = document.querySelector("input[name=HARDCORE]"); // hardcore checkbox
   hardcore.addEventListener("change", function (event) {
-    if (hardcore.checked) {
-      id_hardcore.value = "true";
-    } else {
-      id_hardcore.value = "false";
-    }
+    // set hardcore field to true/false if checked/not checked
+    id_hardcore.checked
+      ? (id_hardcore.value = "true")
+      : (id_hardcore.value = "false");
   });
 });
 
 amazon.addEventListener("click", () => {
-  class_desc.textContent = amazon_desc.toUpperCase();
-  class_name.textContent = "Amazon";
-  document.getElementById("expansion").disabled = false;
-  id_char_class.value = "Amazon";
+  changeCurrentChar("Amazon", amazon_desc);
   enablePopup();
 });
 
 assassin.addEventListener("click", () => {
-  class_desc.textContent = assassin_desc.toUpperCase();
-  class_name.textContent = "Assassin";
-  id_char_class.value = "Assassin";
+  changeCurrentChar("Assassin", assassin_desc);
   expansion.setAttribute("checked", "true");
   expansion.checked = true;
-  document.getElementById("expansion").disabled = true;
+  id_expansion.value = "true";
   enablePopup();
 });
 
 necromancer.addEventListener("click", () => {
-  class_desc.textContent = necromancer_desc.toUpperCase();
-  class_name.textContent = "Necromancer";
-  document.getElementById("expansion").disabled = false;
-  id_char_class.value = "Necromancer";
+  changeCurrentChar("Necromancer", necromancer_desc);
   enablePopup();
 });
 
 barbarian.addEventListener("click", () => {
-  class_desc.textContent = barbarian_desc.toUpperCase();
-  class_name.textContent = "Barbarian";
-  document.getElementById("expansion").disabled = false;
-  id_char_class.value = "Barbarian";
+  changeCurrentChar("Barbarian", barbarian_desc);
   enablePopup();
 });
 
 paladin.addEventListener("click", () => {
-  class_desc.textContent = paladin_desc.toUpperCase();
-  class_name.textContent = "PALADIN";
-  document.getElementById("expansion").disabled = false;
-  id_char_class.value = "Paladin";
+  changeCurrentChar("Paladin", paladin_desc);
   enablePopup();
 });
 
 sorceress.addEventListener("click", () => {
-  class_desc.textContent = sorceress_desc.toUpperCase();
-  class_name.textContent = "Sorceress";
-  document.getElementById("expansion").disabled = false;
-  id_char_class.value = "Sorceress";
+  changeCurrentChar("Sorceress", sorceress_desc);
   enablePopup();
 });
 
 druid.addEventListener("click", () => {
-  class_desc.textContent = druid_desc.toUpperCase();
-  class_name.textContent = "Druid";
-  id_char_class.value = "Druid";
+  changeCurrentChar("Druid", druid_desc);
   expansion.setAttribute("checked", "true");
   expansion.checked = true;
-  document.getElementById("expansion").disabled = true;
+  id_expansion.value = "true";
   enablePopup();
 });
