@@ -195,12 +195,33 @@ fieldset.form-group.centered {
   font-size: 12px;
 }
 
+.content-section.create-acc {
+  display: inline-block;
+  text-align: left;
+  margin-top: 150px;
+}
+
+.create-acc-buttons {
+  margin-top: 10px;
+  padding: 0 20px 10px 20px;
+  font-size: 14px;
+}
+
+.create-acc-buttons button.btn-char {
+  margin: 10px;
+}
+
 button.btn-left {
   float: left;
 }
 
 button.btn-right {
   float: right;
+}
+
+select,
+select option {
+  background-color: black;
 }
 
 /* MEDIA QUERRIES */
@@ -218,6 +239,7 @@ button.btn-right {
 @media (max-width: 767px) {
   .char-data {
     padding-left: 80px;
+    padding-top: 5px;
     font-size: 0.9em;
   }
 
@@ -226,8 +248,8 @@ button.btn-right {
   }
 
   .char-img > img {
-    padding: 20px 15px 15px 15px;
-    height: 80%;
+    padding: 15px 10px 10px 10px;
+    height: 55%;
   }
 
   .btn-char {

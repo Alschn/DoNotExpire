@@ -56,16 +56,14 @@
                                 {% endif %}
 
                                 {% if char.last_visited %}
-                                    {% if char.expired != True %}
+                                    {% if char.expired != True and char.expires > 0 %}
                                         <span class="char-info">Expires in {{ char.expires }} days</span>
                                     {% else %}
-                                        <br>
                                         <span class="hardcore">Character expired</span>
-                                        <br>
                                     {% endif %}
                                 {% endif %}
-                                <br>
-                                {% if char.expired != True %}
+
+                                {% if char.expired != True and char.expires > 0 %}
                                 <form action="{% url 'update-date' name=char.name %}" method="POST">
                                     {% csrf_token %}
                                     <button class="btn-update" type="submit" name="update_date">Update</button>
