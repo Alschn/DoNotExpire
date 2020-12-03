@@ -10,4 +10,4 @@ class CreateAccountForm(forms.ModelForm):
 class CreateCharacterForm(forms.ModelForm):
     class Meta:
         model = Character
-        fields = ['name', 'char_class', 'level']
+        fields = ['name', 'char_class', 'level', 'expansion', 'hardcore']

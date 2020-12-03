@@ -1,12 +1,93 @@
 {% extends 'manager/base.html' %}
 
+{% load static %}
+
+{% block css_links %}
+{% endblock css_links %}
+
+{% block nav_img %}
+{% endblock nav_img %}
+
+
 {% block main %}
-<div class="container container-main mt-5">
-    <form action="" method="POST">
-        {% csrf_token %}
-        {{ c_form.as_p }}
-        <button class="btn-char"><a href="{% url 'home' %}">Exit</a></button>
-        <button class="btn-char" type="submit">Confirm</button>   
-    </form>
-</div>
+    <h1 class="title-select">SELECT HERO CLASS</h1>
+        
+        <div>
+            <h1 class="title-class" id="class-name">CLASSNAME</h1>
+            <p class="class-description" id="class-description">DESCRIPTION OF A CLASS</p>
+        </div>
+        
+        <div class="row">
+            <div class="col">
+            <img src="https://www.theamazonbasin.com/wiki/images/9/9c/Amazon.gif" class="img-fluid" id="amazon">
+            </div>
+            
+            <div class="col">
+            <img src="https://www.theamazonbasin.com/wiki/images/3/37/Assassin.gif" class="img-fluid img-assassin" id="assassin">
+            </div>
+            
+            <div class="col">
+            <img src="https://www.theamazonbasin.com/wiki/images/7/73/Necromancer.gif" class="img-fluid" id="necromancer">
+            </div>
+            
+            <div class="col">
+            <img src="https://www.theamazonbasin.com/wiki/images/b/b5/Barbarian.gif" class="img-fluid" id="barbarian">
+            </div>
+            
+            <div class="col">
+            <img src="https://www.theamazonbasin.com/wiki/images/c/c3/Paladin.gif" class="img-fluid" id="paladin">
+            </div>
+            
+            <div class="col">
+            <img src="https://www.theamazonbasin.com/wiki/images/f/f2/Sorceress.gif" class="img-fluid" id="sorceress">
+            </div>
+            
+            <div class="col">
+            <img src="https://www.theamazonbasin.com/wiki/images/a/a8/Druid.gif" class="img-fluid" id="druid">
+            </div>
+        </div>
+        
+        <div class="fireplace">
+            <img src="{% static '../media/campfire.jpg' %}">
+        </div>
+
+        <div class="char-form">
+            <div id="char-form-popup">
+                <form action="" method="POST">
+                {% csrf_token %}
+                    <h6>CHARACTER NAME</h6>
+                    {{c_form.name}}
+                    {{c_form.level}}<br>
+                    
+                    {{c_form.char_class}}
+                    <input type=checkbox name="EXPANSION" checked id="expansion"><label for="EXPANSION">EXPANSION CHARACTER</label><br>
+                    {{c_form.expansion}}
+                    <input type=checkbox name="HARDCORE" id="hardcore"><label for="HARDCORE">HARDCORE</label>
+                    {{c_form.hardcore}}
+                
+            </div>
+        </div>
+    
+        <div class="buttons">
+            <button class="btn-left btn-char">
+                <a href="{% url 'home' %}">EXIT</a>
+            </button>
+
+            <button class="btn-right btn-char" type="submit">
+            OK
+            </button>
+            </form>
+        </div>
+
+        {% comment %} <form action="" method="POST">
+            {% csrf_token %}
+            {{c_form.as_p}}
+
+
+            {{ c_form.name }}
+            {{ c_form.level }}
+            {{ c_form.char_class }}
+        </form> {% endcomment %}
+
 {% endblock main %}
+

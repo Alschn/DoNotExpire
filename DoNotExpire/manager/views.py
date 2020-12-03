@@ -11,6 +11,7 @@ from .models import Account, Character
 
 
 def home(request):
+    """Home page view if user is logged in or not."""
     try:
         user_accounts = request.user.profile.accounts.all()
     except AttributeError:
@@ -75,11 +76,11 @@ def update_date(request, name):
         char.save()
         return redirect('home')
 
-
+@login_required
 def delete_char(request):
     """Delete character working with a button.
-    There should be one more view to confirm that 
-    we want to delete the car (to be implemented)"""
+    Once the button is clicked, user is asked to confirm their action
+    on the modal that popped up."""
     if 'char_id' in request.POST:
         try:
             char = Character.objects.get(name=request.POST.get('char_id'))
@@ -89,18 +90,6 @@ def delete_char(request):
             messages.warning(request, "Select a character to be deleted first!")
             return redirect('home')
     return redirect('home')
-
-
-class CharacterDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    model = Character
-    success_url = '/'
-    template_name = 'manager/delete_char.html'
-
-    def test_func(self):
-        char = self.get_object()
-        if char.acc in self.request.user.profile.accounts.all():
-            return True
-        return False
 
 
 class AccountDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):

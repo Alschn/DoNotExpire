@@ -1,6 +1,7 @@
 {% extends 'manager/base.html' %}
 
 {% block main %}
+<div class="mt-5">
     <h2>You have been logged out.</h2>
     <div class="border-top pt-3">
         <small class="text-muted">
@@ -8,4 +9,5 @@
             <a href="{% url 'home' %}" class="ml-5">Home</a>
         </small>
     </div>
+</div>
 {% endblock main %}
