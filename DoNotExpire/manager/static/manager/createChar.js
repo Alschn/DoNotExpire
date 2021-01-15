@@ -37,6 +37,10 @@ const id_hardcore = document.getElementById("id_hardcore");
 id_expansion.value = "true"; // initially expansion
 id_hardcore.value = "false"; // initially softcore
 
+// checkboxes
+const expansion = document.querySelector("input[name=EXPANSION]"); // expansion checkbox
+const hardcore = document.querySelector("input[name=HARDCORE]"); // hardcore checkbox
+
 const enablePopup = () => {
   // Show class name (title), description and form
   class_name.style.visibility = "visible";
@@ -54,63 +58,61 @@ const changeCurrentChar = (char_name, char_desc) => {
     : (exp.disabled = false);
 };
 
-document.addEventListener("DOMContentLoaded", function (event) {
-  var expansion = document.querySelector("input[name=EXPANSION]"); // expansion checkbox
-  expansion.addEventListener("change", function (event) {
+const setExpansion = () => {
+  expansion.setAttribute("checked", "true");
+  expansion.checked = true;
+  id_expansion.value = "true";
+};
+
+document.addEventListener("DOMContentLoaded", (e) => {
+  expansion.addEventListener("change", (e) => {
     // set expansion field to true/false if checked/not checked
-    id_expansion.checked
+    expansion.checked
       ? (id_expansion.value = "true")
       : (id_expansion.value = "false");
   });
-});
 
-document.addEventListener("DOMContentLoaded", function (event) {
-  var hardcore = document.querySelector("input[name=HARDCORE]"); // hardcore checkbox
-  hardcore.addEventListener("change", function (event) {
+  hardcore.addEventListener("change", (e) => {
     // set hardcore field to true/false if checked/not checked
-    id_hardcore.checked
+    hardcore.checked
       ? (id_hardcore.value = "true")
       : (id_hardcore.value = "false");
   });
 });
 
-amazon.addEventListener("click", () => {
+amazon.addEventListener("click", (e) => {
   changeCurrentChar("Amazon", amazon_desc);
   enablePopup();
 });
 
-assassin.addEventListener("click", () => {
+assassin.addEventListener("click", (e) => {
   changeCurrentChar("Assassin", assassin_desc);
-  expansion.setAttribute("checked", "true");
-  expansion.checked = true;
-  id_expansion.value = "true";
+  setExpansion();
   enablePopup();
 });
 
-necromancer.addEventListener("click", () => {
+necromancer.addEventListener("click", (e) => {
   changeCurrentChar("Necromancer", necromancer_desc);
   enablePopup();
 });
 
-barbarian.addEventListener("click", () => {
+barbarian.addEventListener("click", (e) => {
   changeCurrentChar("Barbarian", barbarian_desc);
   enablePopup();
 });
 
-paladin.addEventListener("click", () => {
+paladin.addEventListener("click", (e) => {
   changeCurrentChar("Paladin", paladin_desc);
   enablePopup();
 });
 
-sorceress.addEventListener("click", () => {
+sorceress.addEventListener("click", (e) => {
   changeCurrentChar("Sorceress", sorceress_desc);
   enablePopup();
 });
 
-druid.addEventListener("click", () => {
+druid.addEventListener("click", (e) => {
   changeCurrentChar("Druid", druid_desc);
-  expansion.setAttribute("checked", "true");
-  expansion.checked = true;
-  id_expansion.value = "true";
+  setExpansion();
   enablePopup();
 });

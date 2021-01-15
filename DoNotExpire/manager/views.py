@@ -2,10 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import DeleteView
 from django.contrib import messages
-import datetime
+from django.utils import timezone
 from .forms import CreateAccountForm, CreateCharacterForm
 from .models import Account, Character
 
@@ -34,9 +34,8 @@ def create_char(request, pk):
         if c_form.is_valid():
             if Account.objects.get(name=pk).chars.all().count() >= 16:
                 # maybe there will be just redirect to home and message to the user
-                raise ValidationError(
-                    'You can have up to 16 characters per account in Diablo II.'
-                )
+                messages.warning(request, "Reached max number of characters per account!")
+                return redirect('home')
             instance = c_form.save(commit=False)
             instance.acc = Account.objects.get(name=pk)
             instance.class_image = instance.get_class_image()
@@ -72,7 +71,7 @@ def update_date(request, name):
             char.save()
             messages.error(request, f"{char.name} has expired :(")
             return redirect('home')
-        char.last_visited = datetime.datetime.now()
+        char.last_visited = timezone.now()
         char.save()
         return redirect('home')
 
