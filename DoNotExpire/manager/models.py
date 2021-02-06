@@ -1,20 +1,18 @@
+import os
 from django.db import models
-from django.core.exceptions import ValidationError
 from django.core.validators import (
     RegexValidator,
     MaxValueValidator,
     MinValueValidator,
     MinLengthValidator,
-    FileExtensionValidator
 )
 from DoNotExpire.profiles.models import Profile
-from datetime import datetime, timedelta
+from datetime import timedelta
 from django.utils import timezone
-import os
 
 
-alphanumeric = RegexValidator(r'^[0-9a-zA-Z.-]*', 'Account name should consist of alphanumerics and .- signs')
-letters_only = RegexValidator(r'^[a-zA-Z]*', 'Character name should consist of letters only.')
+alphanumeric = RegexValidator(r'^[0-9a-zA-Z.-_]*', 'Account name should consist of alphanumerics and .-_ signs')
+letters_only = RegexValidator(r'^[a-zA-Z]+$', 'Character name should consist of letters only.')
 
 
 class Account(models.Model):

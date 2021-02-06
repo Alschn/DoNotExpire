@@ -38,6 +38,9 @@ def create_char(request, pk):
                 return redirect('home')
             instance = c_form.save(commit=False)
             instance.acc = Account.objects.get(name=pk)
+            acc = instance.acc
+            acc.last_visited = timezone.now()
+            acc.save()
             instance.class_image = instance.get_class_image()
             instance.save()
             return redirect('home')
@@ -54,6 +57,7 @@ def create_account(request):
         if a_form.is_valid():
             instance = a_form.save(commit=False)
             instance.profile = request.user.profile
+            instance.last_visited = timezone.now()
             instance.save()
             return redirect('home')
     else:
@@ -66,13 +70,16 @@ def update_date(request, name):
     """Updates character's last_visited datefield."""
     if request.method == "POST":
         char = Character.objects.get(name=name)
+        acc = char.acc
         if char.last_visited and char.expires() < 0:
             char.expired = True
             char.save()
             messages.error(request, f"{char.name} has expired :(")
             return redirect('home')
         char.last_visited = timezone.now()
+        acc.last_visited = timezone.now()
         char.save()
+        acc.save()
         return redirect('home')
 
 @login_required
@@ -83,6 +90,9 @@ def delete_char(request):
     if 'char_id' in request.POST:
         try:
             char = Character.objects.get(name=request.POST.get('char_id'))
+            acc = char.acc
+            acc.last_visited = timezone.now()
+            acc.save()
             char.delete()
             messages.success(request, f"{char.name} from account {char.acc} has been deleted")
         except ObjectDoesNotExist:

@@ -168,8 +168,8 @@ a:hover {
 }
 
 fieldset.form-group.centered {
-  margin-right: 350px;
-  margin-left: 350px;
+  margin-right: 300px;
+  margin-left: 300px;
 }
 
 .form-group > .btn-char,
@@ -247,14 +247,23 @@ select option {
     font-size: 18px;
   }
 
+  .char-img {
+    padding-left: 10px;
+  }
+
   .char-img > img {
     padding: 15px 10px 10px 10px;
-    height: 55%;
+    min-height: 60px;
+    max-height: 80px;
   }
 
   .btn-char {
     padding: 1px 5px 1px 5px;
     font-size: 1.25em;
+  }
+
+  .btn-new > button.btn-char {
+    height: 80px;
   }
 }
 
@@ -265,4 +274,12 @@ select option {
     margin-left: 125px;
   }
   /* button size and textwrap should be adjusted */
+}
+
+@media (max-width: 1200px) {
+  button.btn-char {
+    padding: 0;
+    font-size: 20px;
+    line-height: normal;
+  }
 }

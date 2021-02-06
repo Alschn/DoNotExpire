@@ -138,8 +138,8 @@
 </div>
 
 <script type="text/javascript">
-function setCharDelete(clicked) {
-    var modal_delete = $('#modal-delete');
+const setCharDelete = (clicked) => {
+    let modal_delete = $('#modal-delete');
     hidden_input = $(clicked).prev();
     char_name = hidden_input.val();
     modal_delete.val(char_name);
