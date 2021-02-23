@@ -1,10 +1,59 @@
-{% extends 'manager/base.html' %}
+{% extends 'manager/base.html' %} {% block main %}
+<h1>{{ data.user }}</h1>
 
-{% block main %}
-    <p>
-        {{ data.user }}
-    </p>
-    <p>
-        {{ data.created }}
-    </p>
-{% endblock main %}
+{% for account in accounts %}
+<div class="table-responsive table-responsive-sm account-table">
+  <table class="table table-bordered table-dark">
+    <thead>
+      <tr>
+        <th scope="col" colspan="8"><h2>{{account}}</h2></th>
+      </tr>
+      <tr>
+        <th scope="col">Nr</th>
+        <th scope="col">Name</th>
+        <th scope="col">Level</th>
+        <th scope="col">Class</th>
+        <th scope="col">Expansion</th>
+        <th scope="col">Hardcore</th>
+        <th scope="col">Last Visited</th>
+        <th scope="col">Expired</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for char in account.chars.all %}
+      <tr>
+        <td>{{forloop.counter}}</td>
+        <td>{{char.name}}</td>
+        <td>{{char.level}}</td>
+        <td>{{char.char_class}}</td>
+        <td>
+          {% if char.expansion %}
+          <i class="bi-check"></i>
+          {% else %}
+          <i class="bi-x"></i>
+          {% endif %}
+        </td>
+        <td>
+          {% if char.hardcore %}
+          <i class="bi-check"></i>
+          {% else %}
+          <i class="bi-x"></i>
+          {% endif %}
+        </td>
+        <td>
+          {% if char.last_visited %} {{char.last_visited}} {% else %} ---
+          {%endif%}
+        </td>
+        <td>
+          {% if char.expired %}
+          <i class="bi-check"></i>
+          {% else %}
+          <i class="bi-x"></i>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endfor %} {% endblock main %}

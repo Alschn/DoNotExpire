@@ -14,7 +14,7 @@
         </div>
         {% else %}
         
-        <p>Hi, {{ user.username }} <a class="float-right" href="{% url 'logout' %}">Logout</a></p>
+        <p>Hi, <a href={% url 'profile' %} style="color:white">{{ user.username }}</a> <a class="float-right" href="{% url 'logout' %}">Logout</a></p>
         <p>Add new account <a href="{% url 'create-account' %}" style="color:white">Click here</a></p>
         
         {% endif%}

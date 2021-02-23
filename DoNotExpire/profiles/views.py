@@ -18,5 +18,6 @@ def register(request):
 
 @login_required
 def profile(request):
-    data = request.user.profile
-    return render(request, 'profiles/profile.html', {'data': data})
+    profile = request.user.profile
+    accounts = profile.accounts.all()
+    return render(request, 'profiles/profile.html', {'data': profile, 'accounts': accounts})
