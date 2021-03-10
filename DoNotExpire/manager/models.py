@@ -25,11 +25,17 @@ class Account(models.Model):
         ('Asia', 'Asia'),
     )
     realm = models.CharField(max_length=7, choices=REALMS_CHOICES)
-    last_visited = models.DateTimeField(default=None, null=True, blank=True)
+    last_visited = models.DateTimeField(default=timezone.now, null=True)
     expired = models.BooleanField(default=False, null=True, blank=True)
 
     def __str__(self):
         return f"{self.name}  @{self.realm}"
+
+    def get_all_characters(self):
+        return self.chars.all()
+
+    def get_all_characters_count(self):
+        return self.chars.all().count()
 
 
 class Character(models.Model):
@@ -47,8 +53,8 @@ class Character(models.Model):
     char_class = models.CharField(choices=CLASS_CHOICES, max_length=11)
     class_image = models.ImageField(blank=True)
     acc = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='chars')
-    last_visited = models.DateTimeField(null=True, blank=True)
-    expired = models.BooleanField(default=False, null=True, blank=True)
+    last_visited = models.DateTimeField(default=timezone.now)
+    expired = models.BooleanField(default=False)
     expansion = models.BooleanField(default=True, null=True, blank=True)
     hardcore = models.BooleanField(default=False, null=True, blank=True)
 

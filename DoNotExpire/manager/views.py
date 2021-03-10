@@ -6,34 +6,33 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import DeleteView
 from django.contrib import messages
 from django.utils import timezone
+from django.core.mail import send_mail
+from django.conf import settings
 from .forms import CreateAccountForm, CreateCharacterForm
 from .models import Account, Character
 
 
 def home(request):
     """Home page view if user is logged in or not."""
-    try:
+    if request.user.is_authenticated:
         user_accounts = request.user.profile.accounts.all()
-    except AttributeError:
+    else:
         user_accounts = None
 
-    context = {
-        'user_accounts': user_accounts,
-    }
-    return render(request, 'manager/index.html', context)
+    return render(request, 'manager/index.html', {'user_accounts': user_accounts})
 
 
 @login_required
 def create_char(request, pk):
     """Current user can add a new character to the account
-    where he clicked the button to do so."""
+    where he clicked the button to do so. User can have up to 16 characters.
+    """
     # if current account has 16 chars, then redirect to homepage with message
     # else create form for char creation
     if request.method == "POST":
         c_form = CreateCharacterForm(request.POST)
         if c_form.is_valid():
             if Account.objects.get(name=pk).chars.all().count() >= 16:
-                # maybe there will be just redirect to home and message to the user
                 messages.warning(request, "Reached max number of characters per account!")
                 return redirect('home')
             instance = c_form.save(commit=False)
@@ -102,6 +101,7 @@ def delete_char(request):
 
 
 class AccountDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    """Confirm that you want to delete selected account"""
     model = Account
     success_url = '/'
     template_name = 'manager/delete_account.html'
