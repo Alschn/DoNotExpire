@@ -20,4 +20,4 @@ def register(request):
 def profile(request):
     profile = request.user.profile
     accounts = profile.accounts.all()
-    return render(request, 'profiles/profile.html', {'data': profile, 'accounts': accounts})
+    return render(request, 'profiles/profile.html', {'profile': profile, 'accounts': accounts})

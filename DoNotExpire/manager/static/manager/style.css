@@ -224,6 +224,16 @@ select option {
   background-color: black;
 }
 
+/* Profile page */
+.account-table {
+  margin-bottom: 100px;
+  margin-top: 20px;
+}
+
+.account-table > .table {
+  background-color: #0a0a0a;
+}
+
 /* MEDIA QUERRIES */
 @media (min-width: 991px) {
   .container-main {
@@ -281,5 +291,72 @@ select option {
     padding: 0;
     font-size: 20px;
     line-height: normal;
+  }
+}
+
+@media (max-width: 500px) {
+  /* Home page */
+  .account-box {
+    margin: 0;
+    margin-bottom: 50px;
+  }
+
+  .account-header {
+    font-size: 14px;
+  }
+
+  .char-name-label > h2 {
+    font-size: 1.6rem;
+  }
+
+  a.float-right {
+    float: unset;
+  }
+
+  .char-img {
+    padding-left: 0;
+  }
+
+  .char-img > img {
+    padding: 10px 5px 5px;
+    height: 60%;
+  }
+
+  .char-data {
+    padding: 5px 0 0 50px;
+    font-size: 12px;
+  }
+
+  button.btn-char {
+    font-size: 14px;
+  }
+
+  /* Profile */
+  .account-table .account-table-header {
+    text-align: left;
+  }
+}
+
+@media (max-width: 380px) {
+  .char-img > img {
+    height: 45%;
+  }
+
+  .account-header {
+    display: inline-flex;
+  }
+
+  a.del-acc {
+    text-align: right;
+  }
+
+  .char-data {
+    padding: 5px 0 0 50px;
+    font-size: 11px;
+  }
+
+  button.btn-char.btn-char-create,
+  button.btn-char.btn-char-delete {
+    font-size: 10.5px;
   }
 }

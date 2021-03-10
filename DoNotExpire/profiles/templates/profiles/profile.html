@@ -1,11 +1,13 @@
 {% extends 'manager/base.html' %} {% block main %}
-<h1>{{ data.user }}</h1>
+<h1>{{ profile.user }}</h1>
+<p>Owned accounts: {{profile.get_accounts_count}}</p>
+<p>Owned characters: {{profile.get_all_characters_count}}</p>
 
 {% for account in accounts %}
 <div class="table-responsive table-responsive-sm account-table">
-  <table class="table table-bordered table-dark">
+  <table class="table table-bordered">
     <thead>
-      <tr>
+      <tr class="account-table-header">
         <th scope="col" colspan="8"><h2>{{account}}</h2></th>
       </tr>
       <tr>
@@ -20,7 +22,7 @@
       </tr>
     </thead>
     <tbody>
-      {% for char in account.chars.all %}
+      {% for char in account.get_all_characters %}
       <tr>
         <td>{{forloop.counter}}</td>
         <td>{{char.name}}</td>
@@ -41,7 +43,7 @@
           {% endif %}
         </td>
         <td>
-          {% if char.last_visited %} {{char.last_visited}} {% else %} ---
+          {% if char.last_visited %} {{char.last_visited|date:'b d Y, H:i'}} {% else %} ?
           {%endif%}
         </td>
         <td>
