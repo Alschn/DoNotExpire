@@ -48,7 +48,7 @@
                             <div class="char-img"><img src="{{ char.class_image }}"></div>
 
                             <div class="char-data">
-                                {% if char.hardcore == True %}
+                                {% if char.hardcore %}
                                     <span class="hardcore">{{ char.name }}</span><br>
                                 {% else %}
                                     {{ char.name }}<br>
@@ -56,19 +56,19 @@
                 
                                 <span class="char-info">Level {{ char.level }} {{ char.char_class }}</span><br>
 
-                                {% if char.expansion == True %}
+                                {% if char.expansion %}
                                     <span class="expansion">expansion character</span><br>
                                 {% endif %}
 
                                 {% if char.last_visited %}
-                                    {% if char.expired != True and char.expires > 0 %}
+                                    {% if not char.expired and char.expires > 0 %}
                                         <span class="char-info">Expires in {{ char.expires }} days</span>
                                     {% else %}
                                         <span class="hardcore">Character expired</span>
                                     {% endif %}
                                 {% endif %}
 
-                                {% if char.expired != True and char.expires > 0 %}
+                                {% if not char.expired and char.expires > 0 %}
                                 <form action="{% url 'update-date' name=char.name %}" method="POST">
                                     {% csrf_token %}
                                     <button class="btn-update" type="submit" name="update_date">Update</button>
@@ -102,7 +102,7 @@
                             type="button" 
                             disabled
                             data-toggle="modal" 
-                            data-target="#exampleModalCenter"
+                            data-target="#ModalCenter"
                             onclick="setCharDelete(this)">
                             Delete <br>Character
                         </button>
@@ -114,7 +114,7 @@
             </div>
             {% endfor %}
             <!-- Modal -->
-            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal fade" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                 <div class="modal-body text-center">
