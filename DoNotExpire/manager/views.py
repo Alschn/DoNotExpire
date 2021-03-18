@@ -40,7 +40,6 @@ def create_char(request, pk):
             acc = instance.acc
             acc.last_visited = timezone.now()
             acc.save()
-            instance.class_image = instance.get_class_image()
             instance.save()
             return redirect('home')
     else:
