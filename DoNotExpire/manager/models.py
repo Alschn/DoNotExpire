@@ -51,7 +51,6 @@ class Character(models.Model):
         ('Assassin', 'Assassin'),
     )
     char_class = models.CharField(choices=CLASS_CHOICES, max_length=11)
-    class_image = models.ImageField(blank=True)
     acc = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='chars')
     last_visited = models.DateTimeField(default=timezone.now)
     expired = models.BooleanField(default=False)
@@ -64,7 +63,7 @@ class Character(models.Model):
     def get_class_image(self):
         for char_choice in self.CLASS_CHOICES:
             if self.char_class in char_choice:
-                pic_name = os.path.join("/media", str(self.char_class + ".gif").lower())
+                pic_name = str(self.char_class + ".gif").lower()
                 return pic_name
         return None
 

@@ -2,7 +2,7 @@
   font-family: "Diablo Heavy";
   font-style: normal;
   font-weight: normal;
-  src: local("Diablo Heavy"), url("diablo.woff") format("woff");
+  src: local("Diablo Heavy"), url("../fonts/diablo.woff") format("woff");
 }
 
 * {
@@ -64,14 +64,14 @@ input:focus {
   /* Custom border */
   border-width: 5px 32px 5px 32px;
   border-style: solid;
-  border-image-source: url(/media/diablo_button.jpg);
+  border-image-source: url("../images/diablo_button.jpg");
   border-image-slice: 5 32 5 32 fill;
   border-image-repeat: stretch;
   background: none;
 }
 
 .btn-char-disabled {
-  border-image-source: url(/media/diablo_button_disabled.jpg) !important;
+  border-image-source: url("../images/diablo_button_disabled.jpg") !important;
 }
 
 .btn-update {
@@ -111,19 +111,19 @@ a:hover {
 .custom-border {
   border-width: 1px 1px 13px 1px;
   border-style: solid;
-  border-image-source: url(/media/diablo_border.jpg);
+  border-image-source: url("../images/diablo_border.jpg");
   border-image-slice: 1 1 13 1;
 }
 
 .custom-border-header {
   border-width: 2px 62px 16px 62px;
   border-style: solid;
-  border-image-source: url(/media/diablo_header.jpg);
+  border-image-source: url("../images/diablo_header.jpg");
   border-image-slice: 2 62 16 62;
 }
 
 .custom-border-bottom {
-  background: url(/media/diablo_bottom.jpg);
+  background: url("../images/diablo_bottom.jpg");
   background-repeat: no-repeat;
   background-position: 8px;
   background-size: 100%;

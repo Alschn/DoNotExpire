@@ -1,5 +1,5 @@
 {% extends 'manager/base.html' %}
-
+{% load static %}
 {% block css_chars %}
 {% endblock css_chars %}
 
@@ -45,7 +45,7 @@
                 {% for char in account.chars.all %}
                     
                         <div class="col col-char clickable" onclick="changeText('{{ char.name }}', '{{account.id}}')" id="{{account.name}}" data-char="{{ char.name }}">
-                            <div class="char-img"><img src="{{ char.class_image }}"></div>
+                            <div class="char-img"><img src="{% get_static_prefix %}{{char.get_class_image}}"></div>
 
                             <div class="char-data">
                                 {% if char.hardcore %}
