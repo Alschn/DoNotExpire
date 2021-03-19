@@ -127,3 +127,11 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Editor settings
+.idea
+.vscode
+
+# Static files (except temp file)
+/staticfiles
+!temp

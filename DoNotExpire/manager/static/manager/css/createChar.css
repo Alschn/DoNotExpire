@@ -93,11 +93,6 @@ button.btn-right {
   float: right;
 }
 
-/* .col > img:hover {
-    height: 110% !important;
-    border: 1px solid yellow;
-} */
-
 /* RESPONSIVENESS FIX */
 @media (max-width: 991px) {
   img.img-assassin {

@@ -278,7 +278,6 @@ select option {
 }
 
 @media (max-width: 991px) {
-  /* to be fixed */
   fieldset.form-group.centered {
     margin-right: 125px;
     margin-left: 125px;
@@ -329,6 +328,18 @@ select option {
 
   button.btn-char {
     font-size: 14px;
+  }
+
+  .form-group > .btn-char,
+  .btn-new > .btn-char,
+  .btn-sign-in > .btn-char {
+    width: 70%;
+    font-size: 18px;
+  }
+
+  fieldset.form-group.centered {
+    margin-left: 0;
+    margin-right: 0;
   }
 
   /* Profile */
