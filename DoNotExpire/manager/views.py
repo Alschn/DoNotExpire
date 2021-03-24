@@ -78,6 +78,7 @@ def update_date(request, name):
         acc.last_visited = timezone.now()
         char.save()
         acc.save()
+        messages.success(request, f"You have just visited {char.name} and refreshed their expiration date!")
         return redirect('home')
 
 @login_required

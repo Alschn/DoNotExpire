@@ -56,6 +56,7 @@ class Character(models.Model):
     expired = models.BooleanField(default=False)
     expansion = models.BooleanField(default=True, null=True, blank=True)
     hardcore = models.BooleanField(default=False, null=True, blank=True)
+    ladder = models.BooleanField(default=False, blank=True)
 
     def __str__(self):
         return f"{self.name}: {self.char_class} {self.level}lvl"
@@ -68,6 +69,6 @@ class Character(models.Model):
         return None
 
     def expires(self):
-        expiration_date = self.last_visited + timedelta(days=60)
+        expiration_date = self.last_visited + timedelta(days=90)
         days_until = expiration_date - timezone.now()
         return days_until.days

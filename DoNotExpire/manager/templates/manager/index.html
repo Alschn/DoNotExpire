@@ -37,7 +37,6 @@
                     <span>
                         <a class="float-right del-acc" href="{% url 'delete-acc' pk=account.pk %}">Delete Account</a>
                     </span>
-
                 </div>
                 
                 <div class="row custom-border-header char-name-label"><h2 id="char-name-label-{{account.id}}">{{ account.name }}</h2></div>
@@ -51,18 +50,23 @@
                                 {% if char.hardcore %}
                                     <span class="hardcore">{{ char.name }}</span><br>
                                 {% else %}
-                                    {{ char.name }}<br>
+                                    <span>{{ char.name }}</span><br>
                                 {% endif %}
                 
                                 <span class="char-info">Level {{ char.level }} {{ char.char_class }}</span><br>
 
                                 {% if char.expansion %}
-                                    <span class="expansion">expansion character</span><br>
+                                    <span class="expansion">Expansion character</span><br>
+                                {% endif %}
+
+                                {% if char.ladder %}
+                                    Ladder character<br>
                                 {% endif %}
 
                                 {% if char.last_visited %}
-                                    {% if not char.expired and char.expires > 0 %}
+                                    {% if not char.expired and char.expires > 0 and char.expires <= 60 %}
                                         <span class="char-info">Expires in {{ char.expires }} days</span>
+                                    {% elif not char.expired and char.expires > 60 %}
                                     {% else %}
                                         <span class="hardcore">Character expired</span>
                                     {% endif %}
@@ -93,7 +97,6 @@
                         </form>
                     </div> 
 
-
                     <div class="col button-box">
                         <input type="hidden" name="char_id" value="" id="{{ account.name }}">
                         <button 
@@ -106,15 +109,14 @@
                             onclick="setCharDelete(this)">
                             Delete <br>Character
                         </button>
-
                     </div>
                 </div>
 
-                
             </div>
             {% endfor %}
-            <!-- Modal -->
-            <div class="modal fade" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
+            <!-- Delete character modal -->
+            <div class="modal fade" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                 <div class="modal-body text-center">
@@ -130,7 +132,10 @@
                         <button 
                         type="submit" 
                         class="btn-char btn-right"
-                        data-acc="{{ account.name }}">Yes</button>
+                        data-acc="{{ account.name }}"
+                        >
+                          Yes
+                        </button>
                     </form>
                 </div>
                 </div>
