@@ -9,12 +9,15 @@
     <div class="container container-main">
         {% if not user.is_authenticated %}
         <div class="content-section" style="text-align: center">
-        <p>Log in first to access our website. <a href="{% url 'login' %}">Sign in</a></p>
-        <p>Do not have an account? <a href="{% url 'register' %}">Sign up</a></p>
+            <p>Log in first to access our website. <a href="{% url 'login' %}">Sign in</a></p>
+            <p>Do not have an account? <a href="{% url 'register' %}">Sign up</a></p>
         </div>
         {% else %}
         
-        <p>Hi, <a href={% url 'profile' %} style="color:white">{{ user.username }}</a> <a class="float-right" href="{% url 'logout' %}">Logout</a></p>
+        <p>Hi, 
+          <a href={% url 'profile' %} style="color:white">{{ user.username }}</a> 
+          <a class="float-right" href="{% url 'logout' %}">Logout</a>
+        </p>
         <p>Add new account <a href="{% url 'create-account' %}" style="color:white">Click here</a></p>
         
         {% endif%}
@@ -48,9 +51,9 @@
 
                             <div class="char-data">
                                 {% if char.hardcore %}
-                                    <span class="hardcore">{{ char.name }}</span><br>
+                                    <span class="hardcore" onclick="createModalOnClick('{{char.name}}')">{{ char.name }}</span><br>
                                 {% else %}
-                                    <span>{{ char.name }}</span><br>
+                                    <span onclick="createModalOnClick('{{char.name}}')">{{ char.name }}</span><br>
                                 {% endif %}
                 
                                 <span class="char-info">Level {{ char.level }} {{ char.char_class }}</span><br>
@@ -111,7 +114,6 @@
                         </button>
                     </div>
                 </div>
-
             </div>
             {% endfor %}
 
@@ -153,6 +155,61 @@ const setCharDelete = (clicked) => {
     hidden_input = $(clicked).prev();
     char_name = hidden_input.val();
     modal_delete.val(char_name);
+}
+
+const getModal = () => document.getElementById('charDetailsModal');
+
+const setModalContent = (html) => getModal().querySelector('.modal-content').innerHTML = html;
+
+const initModal = () => {
+    const modal = document.createElement('div');
+    modal.classList.add('modal', 'fade');
+    modal.setAttribute('id', 'charDetailsModal');
+    modal.setAttribute('tabindex', '-1');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-labelledby', 'charDetailsModalLabel');
+    modal.setAttribute('aria-hidden', 'true');
+    modal.innerHTML =
+        '<div class="modal-dialog" role="document">' +
+          '<div class="modal-content"></div>' +
+        '</div>';
+    document.body.appendChild(modal);
+    return modal;
+}
+
+const createModalOnClick = (charname) => {
+    fetch(`/api/chars/${charname}`, {
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+        }
+    }).then(
+        response => response.json()
+    ).then(
+        data => {
+            let modal = getModal();
+            // Init the modal if it hasn't been already.
+            if (!modal) modal = initModal();
+
+            const html =
+            `<div class="modal-header">
+                <h5 class="modal-title" id="charDetailsModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ${JSON.stringify(data)} 
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>`;
+            setModalContent(html);
+            // Show the modal.
+            jQuery(modal).modal('show');
+        }
+    ).catch(err => {console.error(err)})
 }
 </script>
 {% endblock main %}
