@@ -3,13 +3,14 @@
 <p>Owned accounts: {{profile.get_accounts_count}}</p>
 <p>Owned characters: {{profile.get_all_characters_count}}</p>
 
-{% for account in accounts %}
+{% for account in paged_accounts %}
 <div class="table-responsive table-responsive-sm account-table">
   <table class="table table-bordered">
     <thead>
       <tr class="account-table-header">
         <th scope="col" colspan="8"><h2>{{account}}</h2></th>
       </tr>
+      {% if account.chars.all.count != 0 %}
       <tr>
         <th scope="col">Nr</th>
         <th scope="col">Name</th>
@@ -20,6 +21,7 @@
         <th scope="col">Last Visited</th>
         <th scope="col">Expired</th>
       </tr>
+      {% endif %}
     </thead>
     <tbody>
       {% for char in account.get_all_characters %}
@@ -43,8 +45,8 @@
           {% endif %}
         </td>
         <td>
-          {% if char.last_visited %} {{char.last_visited|date:'b d Y, H:i'}} {% else %} ?
-          {%endif%}
+          {% if char.last_visited %} {{char.last_visited|date:'b d Y, H:i'}} 
+          {% else %} ? {%endif%}
         </td>
         <td>
           {% if char.expired %}
@@ -58,4 +60,25 @@
     </tbody>
   </table>
 </div>
-{% endfor %} {% endblock main %}
+{% endfor %}
+
+{% if paged_accounts %}
+<div class="container pagination">
+  <span class="step-links">
+    {% if paged_accounts.has_previous %}
+    <a href="?page=1" class="char-info">&laquo; first</a>
+    <a href="?page={{ paged_accounts.previous_page_number }}" class="char-info">previous</a>
+    {% endif %}
+
+    <span class="current">
+      Page {{ paged_accounts.number }} of {{ paged_accounts.paginator.num_pages}}.
+    </span>
+
+    {% if paged_accounts.has_next %}
+    <a href="?page={{ paged_accounts.next_page_number }}">next</a>
+    <a href="?page={{ paged_accounts.paginator.num_pages }}">last &raquo;</a>
+    {% endif %}
+  </span>
+</div>
+{% endif %}
+{% endblock main %}

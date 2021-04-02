@@ -43,7 +43,6 @@ body {
   margin-top: 50px;
   background: inherit;
   padding: 10px 20px;
-  /* border: 1px solid #ff1900; */
   border-radius: 3px;
   margin-bottom: 20px;
 }
@@ -226,6 +225,7 @@ select option {
 
 .container-inputs div.row {
   margin: 5px;
+  background-color: inherit;
 }
 
 .container-inputs input {
@@ -243,6 +243,15 @@ select option {
 
 .account-table > .table {
   background-color: #0a0a0a;
+}
+
+.pagination a {
+  color: white;
+}
+
+.pagination a:hover {
+  color: red;
+  transition: all 0.2s;
 }
 
 /* MEDIA QUERRIES */
