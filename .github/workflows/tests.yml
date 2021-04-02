@@ -2,12 +2,14 @@ name: DoNotExpire Tests
 
 on:
   push:
-    branches: 
-      -heroku
-      -development
+    branches:
+      - master
+      - heroku
+      - development
 
   pull_request:
-    branches: -master
+    branches:
+      - master
 
 jobs:
   build:
