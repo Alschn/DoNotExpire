@@ -27,36 +27,36 @@
         
         <div class="row">
             <div class="col">
-            <img src="{% static '../media/create_amazon.gif' %}" class="img-fluid" id="amazon">
+            <img src="{% static 'manager/images/create_amazon.gif' %}" class="img-fluid" id="amazon">
             </div>
             
             <div class="col">
-            <img src="{% static '../media/create_assassin.gif' %}" class="img-fluid img-assassin" id="assassin">
+            <img src="{% static 'manager/images/create_assassin.gif' %}" class="img-fluid img-assassin" id="assassin">
             </div>
             
             <div class="col">
-            <img src="{% static '../media/create_necromancer.gif' %}" class="img-fluid" id="necromancer">
+            <img src="{% static 'manager/images/create_necromancer.gif' %}" class="img-fluid" id="necromancer">
             </div>
             
             <div class="col">
-            <img src="{% static '../media/create_barbarian.gif' %}" class="img-fluid" id="barbarian">
+            <img src="{% static 'manager/images/create_barbarian.gif' %}" class="img-fluid" id="barbarian">
             </div>
             
             <div class="col">
-            <img src="{% static '../media/create_paladin.gif' %}" class="img-fluid" id="paladin">
+            <img src="{% static 'manager/images/create_paladin.gif' %}" class="img-fluid" id="paladin">
             </div>
             
             <div class="col">
-            <img src="{% static '../media/create_sorceress.gif' %}" class="img-fluid" id="sorceress">
+            <img src="{% static 'manager/images/create_sorceress.gif' %}" class="img-fluid" id="sorceress">
             </div>
             
             <div class="col">
-            <img src="{% static '../media/create_druid.gif' %}" class="img-fluid" id="druid">
+            <img src="{% static 'manager/images/create_druid.gif' %}" class="img-fluid" id="druid">
             </div>
         </div>
         
         <div class="fireplace">
-            <img src="{% static '../media/fireplace.gif' %}">
+            <img src="{% static 'manager/images/fireplace.gif' %}">
         </div>
 
         <div class="char-form">
@@ -66,13 +66,12 @@
                     <h6>CHARACTER NAME</h6>
                     {{c_form.name}}
                     {{c_form.level}}<br>
-                    
                     {{c_form.char_class}}
+                    {{c_form.ladder}}<label for="id_ladder">Ladder Character</label><br>
                     <input type="checkbox" name="EXPANSION" checked id="expansion"><label for="EXPANSION">EXPANSION CHARACTER</label><br>
                     {{c_form.expansion}}
-                    <input type="checkbox" name="HARDCORE" id="hardcore"><label for="HARDCORE">HARDCORE</label>
+                    <input type="checkbox" name="HARDCORE" id="hardcore"><label for="HARDCORE">HARDCORE</label><br>
                     {{c_form.hardcore}}
-                
             </div>
         </div>
     
@@ -87,6 +86,6 @@
             </form>
         </div>
 
-<script type="text/javascript" src={% static 'manager/createChar.js' %}></script>
+<script type="text/javascript" src={% static 'manager/js/createChar.js' %}></script>
 {% endblock main %}
 

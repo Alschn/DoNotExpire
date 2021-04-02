@@ -7,5 +7,5 @@ urlpatterns = [
     path('<str:pk>/new/char/', manager_views.create_char, name='create-char'),
     path('update_date/<str:name>/', manager_views.update_date, name='update-date'),
     path('delete/acc/<int:pk>', manager_views.AccountDeleteView.as_view(), name='delete-acc'),
-    path('delete/', manager_views.delete_char, name='delete_char')
+    path('delete/', manager_views.delete_char, name='delete_char'),
 ]

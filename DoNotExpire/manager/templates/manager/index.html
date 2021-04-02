@@ -1,5 +1,5 @@
 {% extends 'manager/base.html' %}
-
+{% load static %}
 {% block css_chars %}
 {% endblock css_chars %}
 
@@ -9,12 +9,15 @@
     <div class="container container-main">
         {% if not user.is_authenticated %}
         <div class="content-section" style="text-align: center">
-        <p>Log in first to access our website. <a href="{% url 'login' %}">Sign in</a></p>
-        <p>Do not have an account? <a href="{% url 'register' %}">Sign up</a></p>
+            <p>Log in first to access our website. <a href="{% url 'login' %}">Sign in</a></p>
+            <p>Do not have an account? <a href="{% url 'register' %}">Sign up</a></p>
         </div>
         {% else %}
         
-        <p>Hi, <a href={% url 'profile' %} style="color:white">{{ user.username }}</a> <a class="float-right" href="{% url 'logout' %}">Logout</a></p>
+        <p>Hi, 
+          <a href={% url 'profile' %} style="color:white">{{ user.username }}</a> 
+          <a class="float-right" href="{% url 'logout' %}">Logout</a>
+        </p>
         <p>Add new account <a href="{% url 'create-account' %}" style="color:white">Click here</a></p>
         
         {% endif%}
@@ -37,7 +40,6 @@
                     <span>
                         <a class="float-right del-acc" href="{% url 'delete-acc' pk=account.pk %}">Delete Account</a>
                     </span>
-
                 </div>
                 
                 <div class="row custom-border-header char-name-label"><h2 id="char-name-label-{{account.id}}">{{ account.name }}</h2></div>
@@ -45,24 +47,29 @@
                 {% for char in account.chars.all %}
                     
                         <div class="col col-char clickable" onclick="changeText('{{ char.name }}', '{{account.id}}')" id="{{account.name}}" data-char="{{ char.name }}">
-                            <div class="char-img"><img src="{{ char.class_image }}"></div>
+                            <div class="char-img"><img src="{% get_static_prefix %}{{char.get_class_image}}"></div>
 
                             <div class="char-data">
                                 {% if char.hardcore %}
-                                    <span class="hardcore">{{ char.name }}</span><br>
+                                    <span class="hardcore" onclick="createModalOnClick('{{char.name}}')">{{ char.name }}</span><br>
                                 {% else %}
-                                    {{ char.name }}<br>
+                                    <span onclick="createModalOnClick('{{char.name}}')">{{ char.name }}</span><br>
                                 {% endif %}
                 
                                 <span class="char-info">Level {{ char.level }} {{ char.char_class }}</span><br>
 
                                 {% if char.expansion %}
-                                    <span class="expansion">expansion character</span><br>
+                                    <span class="expansion">Expansion character</span><br>
+                                {% endif %}
+
+                                {% if char.ladder %}
+                                    Ladder character<br>
                                 {% endif %}
 
                                 {% if char.last_visited %}
-                                    {% if not char.expired and char.expires > 0 %}
+                                    {% if not char.expired and char.expires > 0 and char.expires <= 60 %}
                                         <span class="char-info">Expires in {{ char.expires }} days</span>
+                                    {% elif not char.expired and char.expires > 60 %}
                                     {% else %}
                                         <span class="hardcore">Character expired</span>
                                     {% endif %}
@@ -93,7 +100,6 @@
                         </form>
                     </div> 
 
-
                     <div class="col button-box">
                         <input type="hidden" name="char_id" value="" id="{{ account.name }}">
                         <button 
@@ -106,15 +112,13 @@
                             onclick="setCharDelete(this)">
                             Delete <br>Character
                         </button>
-
                     </div>
                 </div>
-
-                
             </div>
             {% endfor %}
-            <!-- Modal -->
-            <div class="modal fade" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
+            <!-- Delete character modal -->
+            <div class="modal fade" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                 <div class="modal-body text-center">
@@ -130,7 +134,10 @@
                         <button 
                         type="submit" 
                         class="btn-char btn-right"
-                        data-acc="{{ account.name }}">Yes</button>
+                        data-acc="{{ account.name }}"
+                        >
+                          Yes
+                        </button>
                     </form>
                 </div>
                 </div>
@@ -143,11 +150,129 @@
 </div>
 
 <script type="text/javascript">
+const getCookie = (name) => {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 const setCharDelete = (clicked) => {
     let modal_delete = $('#modal-delete');
     hidden_input = $(clicked).prev();
     char_name = hidden_input.val();
     modal_delete.val(char_name);
+}
+
+const getModal = () => document.getElementById('charDetailsModal');
+
+const setModalContent = (html) => getModal().querySelector('.modal-content').innerHTML = html;
+
+const initModal = () => {
+    const modal = document.createElement('div');
+    modal.classList.add('modal', 'fade');
+    modal.setAttribute('id', 'charDetailsModal');
+    modal.setAttribute('tabindex', '-1');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-labelledby', 'charDetailsModalLabel');
+    modal.setAttribute('aria-hidden', 'true');
+    modal.innerHTML =
+        '<div class="modal-dialog" role="document">' +
+          '<div class="modal-content"></div>' +
+        '</div>';
+    document.body.appendChild(modal);
+    return modal;
+}
+
+const getCharEqFormInputs = (data) => (
+    Object.entries(data).reduce((total, [key, value], i, arr) => {
+        if (i === 0 || i === arr.length - 1) return total;
+        const upKey = key.charAt(0).toUpperCase() + key.slice(1);
+        const formatedKey = upKey.replace(/_/g, ' ');
+        if (!value) value = '';
+        return total += `
+        <div class="row">
+            <div class="col-4"><label for="${key}">${formatedKey}</label></div>
+            <div class="col-8"><input type="text" name="${key}" value="${value}"></div>
+        </div>
+        `
+    }, ``)
+)
+
+const createModalOnClick = (charname) => {
+    fetch(`/api/chars/${charname}`, {
+        method: "GET",
+        headers: {
+            'Accept': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+        },
+    }).then(
+        response => response.json()
+    ).then(
+        data => {
+            let modal = getModal();
+            // Init the modal if it hasn't been already.
+            if (!modal) modal = initModal();
+
+            // Set modal content
+            const html =
+            `<form method="POST" action="" id="${charname}-eq">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="charDetailsModalLabel">${charname}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="alert alert-success alert-dismissible fade" role="alert" id="${charname}-alert">
+                    </div>
+                    <div class="container container-inputs">
+                        ${getCharEqFormInputs(data)}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+            `;
+            setModalContent(html);
+
+            // On form submit, send request to API
+            const form = document.getElementById(`${charname}-eq`);
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                form_data = new FormData(e.target);
+                fetch(`/api/equipments/${charname}`, {
+                    method: "POST",
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken'),
+                    },
+                    body: form_data,
+                    }
+                ).then(response => {
+                    // Display an alert
+                    const alert = document.getElementById(`${charname}-alert`);
+                    !alert.className.includes("show") ? alert.className += "show" : null;
+                    alert.innerHTML = `Successfully updated ${charname}'s inventory!`;
+                }
+                ).catch(err => console.error(err))
+            })
+            // Show the modal
+            jQuery(modal).modal('show');
+        }
+    ).catch(err => {console.error(err)})
 }
 </script>
 {% endblock main %}

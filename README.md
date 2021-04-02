@@ -1,7 +1,9 @@
 # DoNotExpire
+
 DoNotExpire is a website that makes keeping your Diablo 2 accounts safe from expiring much easier. Built with Django framework.
 
 # Overview:
+
 Multiplayer Diablo II characters expire if they are inactive for too long. Expired characters cannot be recovered. Single Player characters do not expire.
 
 **Newly created characters will expire after 10 days of inactivity. Characters played for two hours or more will expire after 90 days of inactivity.** To reset the inactivity timer on a character, you need to log in to an active game with that character and buy or sell an item, or kill a monster.
@@ -15,20 +17,21 @@ Should you not perm your character and update the info on website, you will be s
 If you keep forgetting to sync your Diablo 2 accounts state with website data, create a simple script to open both your browser with this website and Diablo 2 game instance at the same time. This way you will most likely remember to update the dates.
 
 ## Installation (dev)
-git clone https://github.com/Alschn/CoreRepetition.git  
 
-    cd REPO_PATH/DoNotExpire  
+git clone https://github.com/Alschn/CoreRepetition.git
 
-    py -3 -m venv venv  
+Set **SECRET_KEY** enviromental variable
 
-    venv\Scripts\activate  
+    py -3 -m venv venv
 
-    pip install -r requirements.txt  
+    venv\Scripts\activate
 
-    python manage.py makemigrations  
+    pip install -r requirements.txt
 
-    python manage.py migrate  
+    python manage.py makemigrations
 
-    python manage.py createsuperuser  
+    python manage.py migrate
 
-    python manage.py runserver  
+    python manage.py createsuperuser
+
+    python manage.py runserver

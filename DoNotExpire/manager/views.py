@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -40,7 +40,6 @@ def create_char(request, pk):
             acc = instance.acc
             acc.last_visited = timezone.now()
             acc.save()
-            instance.class_image = instance.get_class_image()
             instance.save()
             return redirect('home')
     else:
@@ -79,6 +78,7 @@ def update_date(request, name):
         acc.last_visited = timezone.now()
         char.save()
         acc.save()
+        messages.success(request, f"You have just visited {char.name} and refreshed their expiration date!")
         return redirect('home')
 
 @login_required

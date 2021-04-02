@@ -1,5 +1,6 @@
 from django import forms
-from .models import Account, Character
+from django.forms.widgets import CheckboxInput
+from .models import Account, Character, Equipment
 
 
 class CreateAccountForm(forms.ModelForm):
@@ -12,4 +13,7 @@ class CreateCharacterForm(forms.ModelForm):
 
     class Meta:
         model = Character
-        fields = ['name', 'char_class', 'level', 'expansion', 'hardcore']
+        fields = ['name', 'char_class', 'level', 'expansion', 'hardcore', 'ladder']
+        widgets = {
+            "ladder": CheckboxInput()
+        }
