@@ -26,5 +26,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Django testing
+        env:
+          SECRET_KEY: rAnD0MstR1nGGitHubActionsw0rKflOw
         run: |
           python3 manage.py test
