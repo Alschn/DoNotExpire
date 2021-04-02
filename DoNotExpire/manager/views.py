@@ -1,5 +1,4 @@
-from django.http.response import JsonResponse
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -10,7 +9,7 @@ from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
 from .forms import CreateAccountForm, CreateCharacterForm
-from .models import Account, Character, Equipment
+from .models import Account, Character
 
 
 def home(request):
@@ -113,22 +112,3 @@ class AccountDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if acc in self.request.user.profile.accounts.all():
             return True
         return False
-
-@login_required
-def character_details(request, charname):
-    char = Character.objects.get(name=charname)
-    eq = Equipment.objects.get(char=char)
-
-    return JsonResponse({
-        'helmet': eq.helmet,
-        'armor': eq.armor,
-        'belt': eq.belt,
-        'gloves': eq.gloves,
-        'boots': eq.boots,
-        'amulet': eq.amulet,
-        'left_ring': eq.left_ring,
-        'right_ring': eq.right_ring,
-    })
-    # return JsonResponse({
-    #     'Error': 'Character not found in the database!'
-    # })

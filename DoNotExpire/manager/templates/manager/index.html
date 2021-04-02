@@ -150,6 +150,22 @@
 </div>
 
 <script type="text/javascript">
+const getCookie = (name) => {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 const setCharDelete = (clicked) => {
     let modal_delete = $('#modal-delete');
     hidden_input = $(clicked).prev();
@@ -177,12 +193,28 @@ const initModal = () => {
     return modal;
 }
 
+const getCharEqFormInputs = (data) => (
+    Object.entries(data).reduce((total, [key, value], i, arr) => {
+        if (i === 0 || i === arr.length - 1) return total;
+        const upKey = key.charAt(0).toUpperCase() + key.slice(1);
+        const formatedKey = upKey.replace(/_/g, ' ');
+        if (!value) value = '';
+        return total += `
+        <div class="row">
+            <div class="col-4"><label for="${key}">${formatedKey}</label></div>
+            <div class="col-8"><input type="text" name="${key}" value="${value}"></div>
+        </div>
+        `
+    }, ``)
+)
+
 const createModalOnClick = (charname) => {
     fetch(`/api/chars/${charname}`, {
+        method: "GET",
         headers: {
             'Accept': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest',
-        }
+            'X-CSRFToken': getCookie('csrftoken'),
+        },
     }).then(
         response => response.json()
     ).then(
@@ -191,22 +223,53 @@ const createModalOnClick = (charname) => {
             // Init the modal if it hasn't been already.
             if (!modal) modal = initModal();
 
+            // Set modal content
             const html =
-            `<div class="modal-header">
-                <h5 class="modal-title" id="charDetailsModalLabel">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                ${JSON.stringify(data)} 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>`;
+            `<form method="POST" action="" id="${charname}-eq">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="charDetailsModalLabel">${charname}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="alert alert-success alert-dismissible fade" role="alert" id="${charname}-alert">
+                    </div>
+                    <div class="container container-inputs">
+                        ${getCharEqFormInputs(data)}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+            `;
             setModalContent(html);
-            // Show the modal.
+
+            // On form submit, send request to API
+            const form = document.getElementById(`${charname}-eq`);
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                form_data = new FormData(e.target);
+                fetch(`/api/equipments/${charname}`, {
+                    method: "POST",
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken'),
+                    },
+                    body: form_data,
+                    }
+                ).then(response => {
+                    // Display an alert
+                    const alert = document.getElementById(`${charname}-alert`);
+                    !alert.className.includes("show") ? alert.className += "show" : null;
+                    alert.innerHTML = `Successfully updated ${charname}'s inventory!`;
+                }
+                ).catch(err => console.error(err))
+            })
+            // Show the modal
             jQuery(modal).modal('show');
         }
     ).catch(err => {console.error(err)})

@@ -224,6 +224,17 @@ select option {
   background-color: black;
 }
 
+.container-inputs div.row {
+  margin: 5px;
+}
+
+.container-inputs input {
+  padding: 2px;
+  color: black;
+  text-decoration: none;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
 /* Profile page */
 .account-table {
   margin-bottom: 100px;
