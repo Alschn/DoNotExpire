@@ -2,16 +2,30 @@ name: DoNotExpire Tests
 
 on:
   push:
-    branches: 
-      -heroku
-      -development
+    branches:
+      - master
+      - heroku
+      - development
 
   pull_request:
-    branches: -master
+    branches:
+      - master
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:10.8
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: github_actions
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
       - uses: actions/checkout@v2
@@ -19,10 +33,14 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
+      - name: psycopg2 prerequisites
+        run: sudo apt-get install libpq-dev
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Django testing
+        env:
+          SECRET_KEY: rAnD0MstR1nGGitHubActionsw0rKflOw
         run: |
           python3 manage.py test

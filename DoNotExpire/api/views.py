@@ -44,17 +44,22 @@ class UpdateEquipment(APIView):
     serializer_class = EquipmentSerializer
 
     def post(self, request, charname):
+        if not request.data:
+            return Response({'Error': 'Received empty request!'}, status=status.HTTP_400_BAD_REQUEST)
+
         char = Character.objects.filter(name=charname)
         if not char.exists():
             return Response({'Error': f'Character {charname} not found!'}, status=status.HTTP_404_NOT_FOUND)
         char = char.first()
+
         eq = Equipment.objects.filter(char=char)
         if not eq.exists():
             return Response({'Error': f"{charname}'s equipment' not found!"}, status=status.HTTP_404_NOT_FOUND)
+
         # Link received data with a character model
-        request.data._mutable = True
+        request.POST._mutable = True
         request.data['char'] = char.pk
-        request.data._mutable = False
+        request.POST._mutable = False
 
         serializer = self.serializer_class(
             instance=eq.first(), data=request.data)
