@@ -13,16 +13,16 @@ class TestAPIViews(TestCase):
     def setUp(self) -> None:
         self.factory = APIRequestFactory()
         self.client = APIClient()
-        self.user = User.objects.create_user(
+
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.user = User.objects.create_user(
             'testuser', email='testuser@test.com', password='testing')
-        self.user.save()
-        self.account = Account.objects.create(
-            name="TestAcc", profile=self.user.profile, realm="Europe")
-        self.account.save()
-        self.character = Character.objects.create(
-            name="TestChar", level=90, char_class="Amazon", acc=self.account
+        cls.account = Account.objects.create(
+            name="TestAcc", profile=cls.user.profile, realm="Europe")
+        cls.character = Character.objects.create(
+            name="TestChar", level=90, char_class="Amazon", acc=cls.account
         )
-        self.character.save()
 
     def _require_login(self):
         self.client.login(username='testuser', password='testing')
