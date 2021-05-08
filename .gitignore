@@ -135,3 +135,9 @@ dmypy.json
 # Static files (except temp file)
 /staticfiles
 !temp
+
+# Coverage files
+coverage
+.coverage
+htmlcov
+.htmlcov

@@ -25,11 +25,13 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('DoNotExpire.manager.urls')),
     path('api/', include('DoNotExpire.api.urls')),
-    path('login/', auth_views.LoginView.as_view(template_name='profiles/login.html'), name='login'),
+    path('login/', auth_views.LoginView.as_view(template_name='profiles/login.html',
+         redirect_authenticated_user=True), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='profiles/logout.html'), name='logout'),
     path('register/', profiles_views.register, name='register'),
     path('profile/', profiles_views.profile, name='profile')
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)
