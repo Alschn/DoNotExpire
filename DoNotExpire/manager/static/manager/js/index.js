@@ -4,11 +4,14 @@ const changeText = (text, id) => {
   display.innerHTML = text;
 };
 
+// Accounts can store up to 18 characters
+const maxCharCount = 18;
+
 // Get all the Create New Character buttons
 let create_btn = $(".btn-char-create");
 create_btn.each(function () {
-  // If there are 16 or more characters, disable the button
-  if (Number($(this).attr("data-char-count")) >= 16) {
+  // If there are 18 or more characters, disable the button
+  if (Number($(this).attr("data-char-count")) >= maxCharCount) {
     $(this).attr("disabled", true);
     $(this).addClass("btn-char-disabled");
   }

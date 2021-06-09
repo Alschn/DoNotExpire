@@ -25,14 +25,14 @@ def home(request):
 @login_required
 def create_char(request, pk):
     """Current user can add a new character to the account
-    where he clicked the button to do so. User can have up to 16 characters.
+    where he clicked the button to do so. User can have up to 18 characters.
     """
-    # if current account has 16 chars, then redirect to homepage with message
+    # if current account has 18 chars, then redirect to homepage with message
     # else create form for char creation
     if request.method == "POST":
         c_form = CreateCharacterForm(request.POST)
         if c_form.is_valid():
-            if Account.objects.get(name=pk).chars.all().count() >= 16:
+            if Account.objects.get(name=pk).chars.all().count() >= 18:
                 messages.warning(request, "Reached max number of characters per account!")
                 return redirect('home')
             instance = c_form.save(commit=False)
