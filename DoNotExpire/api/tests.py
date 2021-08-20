@@ -1,12 +1,14 @@
 import json
-from django.test import TestCase
+
 from django.contrib.auth.models import User
+from django.test import TestCase
 from rest_framework.status import (
     HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND
 )
 from rest_framework.test import APIRequestFactory, APIClient
 
 from DoNotExpire.manager.models import Account, Character, Equipment
+from DoNotExpire.manager.serializers import EquipmentSerializer
 
 
 class TestAPIViews(TestCase):
@@ -25,29 +27,34 @@ class TestAPIViews(TestCase):
         )
 
     def _require_login(self):
-        self.client.login(username='testuser', password='testing')
+        self.client.login(username=self.user.username, password=self.user.password)
+        self.client.force_login(user=self.user)
 
     def test_is_not_authenticated(self):
-        response = self.client.get(f'/api/chars/{self.character.name}')
+        response = self.client.post(f'/api/chars/{self.character.name}/', {})
         self.assertEqual(response.status_code, HTTP_401_UNAUTHORIZED)
+
+    def test_is_not_authenticated_read_only(self):
+        response = self.client.get(f'/api/chars/{self.character.name}/')
+        self.assertEqual(response.status_code, HTTP_200_OK)
 
     def test_is_authenticated(self):
         self._require_login()
-        response = self.client.get(f'/api/chars/{self.character.name}')
+        response = self.client.get(f'/api/chars/{self.character.name}/')
         self.assertNotEqual(response.status_code, HTTP_403_FORBIDDEN)
 
     def test_is_char_owner_permission(self):
-        user = User.objects.create_user(
-            'sus', email='sus@test.com', password='testing123')
-        user.save()
+        User.objects.create_user(
+            'sus', email='sus@test.com', password='testing123'
+        )
         self.client.login(username="sus", password="testing123")
-        response = self.client.get(f'/api/chars/{self.character.name}')
+        response = self.client.get(f'/api/chars/{self.character.name}/equipment')
         self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
 
     def test_get_equipment_char_not_exists(self):
         self._require_login()
         test_charname = 'charthatdoesnotexist'
-        response = self.client.get(f'/api/chars/{test_charname}')
+        response = self.client.get(f'/api/chars/{test_charname}/equipment')
         self.assertEqual(response.status_code, HTTP_404_NOT_FOUND)
         self.assertEqual(
             response.data, {'Error': f"Character {test_charname} not found!"})
@@ -59,7 +66,7 @@ class TestAPIViews(TestCase):
         Equipment.objects.get(char=char_wout_eq).delete()
 
         self._require_login()
-        response = self.client.get(f'/api/chars/{char_wout_eq.name}')
+        response = self.client.get(f'/api/chars/{char_wout_eq.name}/equipment')
         self.assertEqual(response.status_code, HTTP_404_NOT_FOUND)
         self.assertEqual(
             response.data, {
@@ -68,7 +75,7 @@ class TestAPIViews(TestCase):
 
     def test_get_equipment(self):
         self._require_login()
-        response = self.client.get(f'/api/chars/{self.character.name}')
+        response = self.client.get(f'/api/chars/{self.character.name}/equipment')
         self.assertEqual(response.status_code, HTTP_200_OK)
         data = response.data
         fields = [field.name for field in Equipment._meta.get_fields()]
@@ -81,7 +88,7 @@ class TestAPIViews(TestCase):
         self._require_login()
         test_charname = 'charthatdoesnotexist'
         response = self.client.post(
-            f'/api/equipments/{test_charname}', data={'a': 'b'})
+            f'/api/chars/{test_charname}/equipment', data={'a': 'b'})
         self.assertEqual(response.status_code, HTTP_404_NOT_FOUND)
 
     def test_update_equipment_but_it_does_not_exist(self):
@@ -91,19 +98,25 @@ class TestAPIViews(TestCase):
         )
         Equipment.objects.get(char=char_wout_eq).delete()
         response = self.client.post(
-            f'/api/equipments/{char_wout_eq.name}', data={'random': 'data'})
+            f'/api/chars/{char_wout_eq.name}/equipment', data={'random': 'data'}
+        )
         self.assertEqual(response.status_code, HTTP_404_NOT_FOUND)
 
     def test_update_equipment_empty_request(self):
         self._require_login()
         response = self.client.post(
-            f'/api/equipments/{self.character.name}', data=json.dumps({}), content_type='application/json')
+            f'/api/chars/{self.character.name}/equipment',
+            data=json.dumps({}), content_type='application/json'
+        )
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
 
     def test_update_equipment_single_field(self):
         self._require_login()
         response = self.client.post(
-            f'/api/equipments/{self.character.name}', data=json.dumps({"helmet": "Shako 141"}), content_type='application/json')
+            f'/api/chars/{self.character.name}/equipment',
+            data=json.dumps({"helmet": "Shako 141"}),
+            content_type='application/json'
+        )
         self.assertEqual(response.status_code, HTTP_200_OK)
         eq = Equipment.objects.get(char=self.character)
         self.assertEqual(eq.helmet, 'Shako 141')
@@ -128,10 +141,9 @@ class TestAPIViews(TestCase):
             'charms': '9x java45',
         }
         response = self.client.post(
-            f'/api/equipments/{self.character.name}', data=json.dumps(payload), content_type='application/json')
+            f'/api/chars/{self.character.name}/equipment',
+            data=json.dumps(payload), content_type='application/json'
+        )
         self.assertEqual(response.status_code, HTTP_200_OK)
-
         eq = Equipment.objects.get(char=self.character)
-        # get dictionary with all fields and their values to check if changes had been applied
-        eq_fields = eq.__dict__
-        self.assertDictContainsSubset(payload, eq_fields)
+        self.assertEqual(response.json(), EquipmentSerializer(eq).data)
