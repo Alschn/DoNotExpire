@@ -52,7 +52,7 @@ const changeCurrentChar = (char_name, char_desc) => {
   class_desc.textContent = char_desc.toUpperCase(); // Set class description
   class_name.textContent = char_name; // Set class name (title)
   id_char_class.value = char_name; // Set form's char_class field
-  exp = document.getElementById("expansion");
+  const exp = document.getElementById("expansion");
   char_name === "Assassin" || char_name === "Druid"
     ? (exp.disabled = true)
     : (exp.disabled = false);

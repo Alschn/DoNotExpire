@@ -8,6 +8,7 @@ def create_equipment(sender, instance, created, **kwargs):
     if created:
         Equipment.objects.create(char=instance)
 
+
 @receiver(post_save, sender=Character)
 def save_equipment(sender, instance, created, **kwargs):
     instance.equipment.save()
