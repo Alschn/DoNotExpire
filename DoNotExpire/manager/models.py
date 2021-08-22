@@ -26,7 +26,8 @@ class Account(models.Model):
         unique=True
     )
     profile = models.ForeignKey(
-        Profile, on_delete=models.CASCADE, related_name='accounts')
+        Profile, on_delete=models.CASCADE, related_name='accounts'
+    )
     REALMS_CHOICES = (
         ('Europe', "Europe"),
         ('US West', "US West"),
@@ -34,7 +35,7 @@ class Account(models.Model):
         ('Asia', 'Asia'),
     )
     realm = models.CharField(max_length=7, choices=REALMS_CHOICES)
-    last_visited = models.DateTimeField(default=timezone.now, null=True)
+    last_visited = models.DateTimeField(default=timezone.now, null=True, blank=True)
     expired = models.BooleanField(default=False, null=True, blank=True)
 
     def __str__(self):
