@@ -6,11 +6,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
-from DoNotExpire.api.permissions import IsCharOwnerPermission
+from DoNotExpire.api.permissions import IsCharOwnerPermission, IsCharOwner, IsAccountOwner
 from DoNotExpire.manager.models import Character, Equipment, Account
 from DoNotExpire.manager.serializers import (
     EquipmentSerializer, AccountSerializer,
-    CharacterSerializer, CharacterBumpSerializer
+    CharacterSerializer, CharacterBumpSerializer, CreateAccountSerializer, CreateCharacterSerializer,
+    UpdateCharacterSerializer, UpdateAccountSerializer
 )
 
 
@@ -59,7 +60,7 @@ class CharacterBumpLastVisited(APIView):
 class CharacterEquipmentView(APIView):
     """
     GET /api/chars/<str:charname>/bump - Retrieve character's equipment
-    POST /api/chars/<str:charname>/bump - Update character's equipment (partially)
+    POST /api/chars/<str:charname>/bump - Update character's equipment
     """
     authentication_classes = [BasicAuthentication, SessionAuthentication]
     permission_classes = [IsAuthenticated, IsCharOwnerPermission]
@@ -108,10 +109,27 @@ class CharacterViewSet(ModelViewSet):
     PATCH   api/chars/<str:name>/   - partially update character
     DELETE  api/chars/<str:name>/   - delete character
     """
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsCharOwner]
     serializer_class = CharacterSerializer
     queryset = Character.objects.all()
     lookup_field = 'name'
+
+    def get_serializer_class(self):
+        if hasattr(self, 'action') and self.action == 'create':
+            return CreateCharacterSerializer
+        elif hasattr(self, 'action') and self.action in ['update', 'partial_update']:
+            return UpdateCharacterSerializer
+        return super().get_serializer_class()
+
+    def create(self, request, *args, **kwargs):
+        acc_id = request.data.get('acc')
+        prof = request.user.profile.get_all_accounts()
+        if not prof.filter(id=acc_id).exists():
+            return Response({'message': 'You do not own this account!'}, status.HTTP_403_FORBIDDEN)
+        return super().create(request, *args, **kwargs)
+
+    def perform_update(self, serializer):
+        serializer.save(acc=self.get_object().acc)
 
 
 class AccountViewSet(ModelViewSet):
@@ -123,9 +141,20 @@ class AccountViewSet(ModelViewSet):
     PATCH   api/accs/<str:name>/   - partially update account
     DELETE  api/accs/<str:name>/   - delete account
     """
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsAccountOwner]
     serializer_class = AccountSerializer
     queryset = Account.objects.all()
     lookup_field = 'name'
 
-# to do - add isOwner permission to both views and write unit tests
+    def get_serializer_class(self):
+        if hasattr(self, 'action') and self.action == 'create':
+            return CreateAccountSerializer
+        elif hasattr(self, 'action') and self.action in ['update', 'partial_update']:
+            return UpdateAccountSerializer
+        return super().get_serializer_class()
+
+    def perform_create(self, serializer):
+        serializer.save(profile=self.request.user.profile)
+
+    def perform_update(self, serializer):
+        serializer.save(profile=self.request.user.profile)
