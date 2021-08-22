@@ -42,13 +42,17 @@
               </span>
             </div>
 
-            <div class="row custom-border-header char-name-label"><h2
-                id="char-name-label-{{ account.id }}">{{ account.name }}</h2></div>
+            <div class="row custom-border-header char-name-label">
+              <h2 id="char-name-label-{{ account.id }}">{{ account.name }}</h2>
+            </div>
+
             <div class="row custom-border chars-box" id="chars-box-{{ account.id }}">
               {% for char in account.chars.all %}
-
-                <div class="col col-char clickable col-6" onclick="changeText('{{ char.name }}', '{{ account.id }}')"
-                     id="{{ account.name }}" data-char="{{ char.name }}">
+                <div
+                    class="col col-char clickable col-6"
+                    onclick="changeText('{{ char.name }}', '{{ account.id }}')"
+                    id="{{ account.name }}" data-char="{{ char.name }}"
+                >
                   <div class="char-img">
                     <img src="{% get_static_prefix %}{{ char.get_class_image }}" alt="">
                   </div>
@@ -94,7 +98,10 @@
               <div class="col button-box">
                 <form action="{% url 'create-char' account.name %}" method="POST">
                   {% csrf_token %}
-                  <button class="btn-char btn-char-create float-left" data-char-count="{{ account.chars.all.count }}">
+                  <button
+                      class="btn-char btn-char-create float-left"
+                      data-char-count="{{ account.chars.all.count }}"
+                  >
                     Create New<br>Character
                   </button>
                 </form>
@@ -218,7 +225,18 @@
         // get char and remove it
         const charToDelete = document.querySelector(`.col-char[data-char="${char_name}"]`);
         const parent = charToDelete.parentNode;
+        // find button in the current account box
+        const accBox = parent.parentElement;
+        const createButton = accBox.querySelector('.btn-char-create')
+        // if account was full previously, enable the create button
+        const prevCharCount = Number(createButton.getAttribute('data-char-count'));
+        if (prevCharCount === 18) {
+          createButton.disabled = false;
+          createButton.classList.remove('btn-char-disabled');
+        }
+
         parent.removeChild(charToDelete);
+
         // display alert
         const alertBox = document.getElementById('message-alert');
         const alert = document.createElement('div');
@@ -279,7 +297,8 @@
 
     const getCharEqFormInputs = (data) => (
       Object.entries(data).reduce((total, [key, value], i, arr) => {
-        if (i === 0 || i === arr.length - 1) return total;
+        // first comes id, then char object which should be skipped
+        if (i === 0 || i === 1 || i === arr.length - 1) return total;
         const upKey = key.charAt(0).toUpperCase() + key.slice(1);
         const formattedKey = upKey.replace(/_/g, ' ');
         if (!value) value = '';
@@ -318,8 +337,7 @@
                 </div>
                 <div class="modal-body">
                     {% csrf_token %}
-                    <div class="alert alert-success alert-dismissible fade" role="alert" id="${charname}-alert">
-                    </div>
+                    <div id="${charname}-alert"></div>
                     <div class="container container-inputs">
                         ${getCharEqFormInputs(data)}
                     </div>
@@ -346,10 +364,14 @@
                 body: form_data,
               }
             ).then(() => {
-                // Display an alert
-                const alert = document.getElementById(`${charname}-alert`);
-                !alert.className.includes("show") ? alert.className += "show" : null;
-                alert.innerHTML = `Successfully updated ${charname}'s inventory!`;
+                const alertBox = document.getElementById(`${charname}-alert`);
+                const alert = document.createElement('div');
+                alert.classList.add('alert', 'alert-success');
+                alert.innerText = `Successfully updated ${charname}'s inventory!`;
+                alertBox.appendChild(alert);
+                setTimeout(() => {
+                  alertBox.removeChild(alert);
+                }, 3000);
               }
             ).catch(err => console.error(err))
           })
