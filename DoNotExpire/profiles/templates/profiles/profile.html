@@ -1,84 +1,84 @@
 {% extends 'manager/base.html' %} {% block main %}
-<h1>{{ profile.user }}</h1>
-<p>Owned accounts: {{profile.get_accounts_count}}</p>
-<p>Owned characters: {{profile.get_all_characters_count}}</p>
+  <h1>{{ profile.user }}</h1>
+  <p>Owned accounts: {{ profile.get_accounts_count }}</p>
+  <p>Owned characters: {{ profile.get_all_characters_count }}</p>
 
-{% for account in paged_accounts %}
-<div class="table-responsive table-responsive-sm account-table">
-  <table class="table table-bordered">
-    <thead>
-      <tr class="account-table-header">
-        <th scope="col" colspan="8"><h2>{{account}}</h2></th>
-      </tr>
-      {% if account.chars.all.count != 0 %}
-      <tr>
-        <th scope="col">Nr</th>
-        <th scope="col">Name</th>
-        <th scope="col">Level</th>
-        <th scope="col">Class</th>
-        <th scope="col">Expansion</th>
-        <th scope="col">Hardcore</th>
-        <th scope="col">Last Visited</th>
-        <th scope="col">Expired</th>
-      </tr>
-      {% endif %}
-    </thead>
-    <tbody>
-      {% for char in account.get_all_characters %}
-      <tr>
-        <td>{{forloop.counter}}</td>
-        <td>{{char.name}}</td>
-        <td>{{char.level}}</td>
-        <td>{{char.char_class}}</td>
-        <td>
-          {% if char.expansion %}
-          <i class="bi-check"></i>
-          {% else %}
-          <i class="bi-x"></i>
-          {% endif %}
-        </td>
-        <td>
-          {% if char.hardcore %}
-          <i class="bi-check"></i>
-          {% else %}
-          <i class="bi-x"></i>
-          {% endif %}
-        </td>
-        <td>
-          {% if char.last_visited %} {{char.last_visited|date:'b d Y, H:i'}} 
-          {% else %} ? {%endif%}
-        </td>
-        <td>
-          {% if char.expired %}
-          <i class="bi-check"></i>
-          {% else %}
-          <i class="bi-x"></i>
-          {% endif %}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
-{% endfor %}
+  {% for account in paged_accounts %}
+    <div class="table-responsive table-responsive-sm account-table">
+      <table class="table table-bordered">
+        <thead>
+        <tr class="account-table-header">
+          <th scope="col" colspan="8"><h2>{{ account }}</h2></th>
+        </tr>
+        {% if account.chars.all.count != 0 %}
+          <tr>
+            <th scope="col">Nr</th>
+            <th scope="col">Name</th>
+            <th scope="col">Level</th>
+            <th scope="col">Class</th>
+            <th scope="col">Expansion</th>
+            <th scope="col">Hardcore</th>
+            <th scope="col">Last Visited</th>
+            <th scope="col">Expired</th>
+          </tr>
+        {% endif %}
+        </thead>
+        <tbody>
+        {% for char in account.get_all_characters %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ char.name }}</td>
+            <td>{{ char.level }}</td>
+            <td>{{ char.char_class }}</td>
+            <td>
+              {% if char.expansion %}
+                <i class="bi-check"></i>
+              {% else %}
+                <i class="bi-x"></i>
+              {% endif %}
+            </td>
+            <td>
+              {% if char.hardcore %}
+                <i class="bi-check"></i>
+              {% else %}
+                <i class="bi-x"></i>
+              {% endif %}
+            </td>
+            <td>
+              {% if char.last_visited %} {{ char.last_visited|date:'b d Y, H:i' }}
+              {% else %} ? {% endif %}
+            </td>
+            <td>
+              {% if char.expired %}
+                <i class="bi-check"></i>
+              {% else %}
+                <i class="bi-x"></i>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endfor %}
 
-{% if paged_accounts %}
-<div class="container pagination">
+  {% if paged_accounts %}
+    <div class="container pagination">
   <span class="step-links">
     {% if paged_accounts.has_previous %}
-    <a href="?page=1" class="char-info">&laquo; first</a>
-    <a href="?page={{ paged_accounts.previous_page_number }}" class="char-info">previous</a>
+      <a href="?page=1" class="char-info">&laquo; first</a>
+      <a href="?page={{ paged_accounts.previous_page_number }}" class="char-info">previous</a>
     {% endif %}
 
     <span class="current">
-      Page {{ paged_accounts.number }} of {{ paged_accounts.paginator.num_pages}}.
+      Page {{ paged_accounts.number }} of {{ paged_accounts.paginator.num_pages }}.
     </span>
 
     {% if paged_accounts.has_next %}
-    <a href="?page={{ paged_accounts.next_page_number }}">next</a>
-    <a href="?page={{ paged_accounts.paginator.num_pages }}">last &raquo;</a>
+      <a href="?page={{ paged_accounts.next_page_number }}">next</a>
+      <a href="?page={{ paged_accounts.paginator.num_pages }}">last &raquo;</a>
     {% endif %}
   </span>
-</div>
-{% endif %}
+    </div>
+  {% endif %}
 {% endblock main %}

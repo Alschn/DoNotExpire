@@ -9,14 +9,14 @@ from DoNotExpire.profiles.models import Profile
 from datetime import timedelta
 from django.utils import timezone
 
-
 alphanumeric = RegexValidator(
     r'^[0-9a-zA-Z\.\-\_]{2,15}$',
     'Account name should consist of alphanumerics and ".", "-", "_" signs, and be between 2 and 15 characters.'
 )  # and probably more special signs
 
 letters_only = RegexValidator(
-    r'^[a-zA-Z]{2,15}$', 'Character name should consist of letters only. (2 to 15)')
+    r'^[a-zA-Z]{2,15}$', 'Character name should consist of letters only. (2 to 15)'
+)
 
 
 class Account(models.Model):
@@ -26,7 +26,8 @@ class Account(models.Model):
         unique=True
     )
     profile = models.ForeignKey(
-        Profile, on_delete=models.CASCADE, related_name='accounts')
+        Profile, on_delete=models.CASCADE, related_name='accounts'
+    )
     REALMS_CHOICES = (
         ('Europe', "Europe"),
         ('US West', "US West"),
@@ -34,7 +35,7 @@ class Account(models.Model):
         ('Asia', 'Asia'),
     )
     realm = models.CharField(max_length=7, choices=REALMS_CHOICES)
-    last_visited = models.DateTimeField(default=timezone.now, null=True)
+    last_visited = models.DateTimeField(default=timezone.now, null=True, blank=True)
     expired = models.BooleanField(default=False, null=True, blank=True)
 
     def __str__(self):
@@ -46,6 +47,9 @@ class Account(models.Model):
     def get_all_characters_count(self):
         return self.chars.all().count()
 
+    class Meta:
+        ordering = ['id']
+
 
 class Character(models.Model):
     name = models.CharField(
@@ -54,7 +58,8 @@ class Character(models.Model):
         unique=True
     )
     level = models.IntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(99)])
+        validators=[MinValueValidator(1), MaxValueValidator(99)]
+    )
     CLASS_CHOICES = (
         ('Amazon', 'Amazon'),
         ('Barbarian', 'Barbarian'),
@@ -65,8 +70,7 @@ class Character(models.Model):
         ('Assassin', 'Assassin'),
     )
     char_class = models.CharField(choices=CLASS_CHOICES, max_length=11)
-    acc = models.ForeignKey(
-        Account, on_delete=models.CASCADE, related_name='chars')
+    acc = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='chars')
     last_visited = models.DateTimeField(default=timezone.now)
     expired = models.BooleanField(default=False)
     expansion = models.BooleanField(default=True, null=True, blank=True)
@@ -87,6 +91,9 @@ class Character(models.Model):
         expiration_date = self.last_visited + timedelta(days=90)
         days_until = expiration_date - timezone.now()
         return days_until.days
+
+    class Meta:
+        ordering = ['id']
 
 
 class Equipment(models.Model):

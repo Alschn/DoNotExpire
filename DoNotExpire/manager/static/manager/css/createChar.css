@@ -9,7 +9,7 @@ body {
   height: calc(100vh - 40px);
   background-color: black !important;
   color: white !important;
-  font-family: "Diablo Heavy" !important;
+  font-family: "Diablo Heavy", sans-serif !important;
 }
 
 .container {
@@ -53,7 +53,7 @@ h1.title-class {
 #char-form-popup {
   display: inline-block;
   text-align: left;
-  line-height: 0px; /*remove break*/
+  line-height: 0; /*remove break*/
   font-size: 18px;
   visibility: hidden;
 }
@@ -93,24 +93,6 @@ button.btn-right {
   float: right;
 }
 
-/* RESPONSIVENESS FIX */
-@media (max-width: 991px) {
-  img.img-assassin {
-    height: 156px;
-  }
-}
-
-@media (max-width: 767px) {
-  img.img-assassin {
-    height: 100px;
-  }
-}
-
-@media (max-width: 574px) {
-  img.img-assassin {
-    max-height: 18vh;
-  }
-}
 
 input#id_level {
   width: 60px;
@@ -155,4 +137,23 @@ input,
 input:focus {
   box-shadow: none !important;
   background-color: black;
+}
+
+/* RESPONSIVENESS FIX */
+@media (max-width: 991px) {
+  img.img-assassin {
+    height: 156px;
+  }
+}
+
+@media (max-width: 767px) {
+  img.img-assassin {
+    height: 100px;
+  }
+}
+
+@media (max-width: 574px) {
+  img.img-assassin {
+    max-height: 18vh;
+  }
 }

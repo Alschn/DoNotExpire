@@ -1,7 +1,8 @@
-from DoNotExpire.manager.models import Account, Character
-from DoNotExpire.profiles.models import Profile
 from django.contrib.auth.models import User
 from django.test import TestCase
+
+from DoNotExpire.manager.models import Account, Character
+from DoNotExpire.profiles.models import Profile
 
 
 class ProfileTests(TestCase):

@@ -5,15 +5,22 @@
   src: local("Diablo Heavy"), url("../fonts/diablo.woff") format("woff");
 }
 
+:root {
+  --golden: rgb(181, 161, 15);
+  --golden-border: rgba(216, 206, 133, 0.9);
+  --golden-border-modal: rgb(121, 109, 18);
+}
+
 * {
   padding: 0;
   margin: 0;
-  font-family: "Diablo Heavy";
-  color: rgb(181, 161, 15);
+  color: var(--golden);
 }
 
 body {
   background-color: black;
+  font-family: "Diablo Heavy", sans-serif;
+  color: var(--golden);
 }
 
 .navbar-brand img {
@@ -26,13 +33,9 @@ body {
 }
 
 .row.chars-box {
-  max-height: 620px;
+  height: 620px;
   overflow-y: scroll;
-  /* This works for now but there are issues:
-    1. char-box doesn't look good on 620px height because of boostrap vertical stretch
-    2. scroll could be customized and look like the one from Diablo II 
-    maybe JS or Jquery can be used there to fix this
-    */
+  align-content: flex-start;
 }
 
 .account-header {
@@ -76,7 +79,7 @@ input:focus {
 .btn-update {
   color: white;
   background-color: black;
-  border: 0.5px solid rgb(38, 36, 36);
+  border: 1px solid rgba(38, 36, 36, 0.9);
   padding: 1px 2px 1px 2px;
 }
 
@@ -91,7 +94,7 @@ a:hover {
 
 .account-box {
   margin-top: 30px;
-  margin-bottom: 200px;
+  margin-bottom: 140px;
 }
 
 .del-acc,
@@ -144,7 +147,7 @@ a:hover {
 
 .border-yellow {
   /* Used in JQuery to highlight the selected char */
-  border: 0.5px solid rgb(216, 206, 133) !important;
+  border: 1px solid var(--golden-border) !important;
 }
 
 .char-info {
@@ -180,7 +183,7 @@ fieldset.form-group.centered {
 
 .modal-content {
   background: linear-gradient(to top right, #030303 0%, #121212 100%);
-  border: 2px solid rgb(121, 109, 18);
+  border: 2px solid var(--golden-border-modal);
 }
 
 .modal-body {
@@ -198,6 +201,7 @@ fieldset.form-group.centered {
   display: inline-block;
   text-align: left;
   margin-top: 150px;
+  color: var(--golden);
 }
 
 .create-acc-buttons {
@@ -221,6 +225,7 @@ button.btn-right {
 select,
 select option {
   background-color: black;
+  color: inherit;
 }
 
 .container-inputs div.row {
@@ -302,6 +307,7 @@ select option {
     margin-right: 125px;
     margin-left: 125px;
   }
+
   /* button size and textwrap should be adjusted */
 }
 
@@ -316,8 +322,7 @@ select option {
 @media (max-width: 500px) {
   /* Home page */
   .account-box {
-    margin: 0;
-    margin-bottom: 50px;
+    margin: 0 0 50px;
   }
 
   .account-header {

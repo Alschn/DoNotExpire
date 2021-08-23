@@ -26,7 +26,7 @@ SECRET_KEY = os.environ['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['donotexpire.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['donotexpire.herokuapp.com', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # installed apps
     'rest_framework',
+    'rest_framework.authtoken',
     'crispy_forms',
     # apps
     'DoNotExpire.api',
@@ -138,8 +139,11 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ]
 }
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
@@ -155,10 +159,11 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
 
+# not used rn - config for sending emails
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = ''    # os.environ['DONOTEXPIRE_EMAIL']
-EMAIL_HOST_PASSWORD = ''    # os.environ['DONOTEXPIRE_EMAIL_PASS']
+EMAIL_HOST_USER = os.environ.get('DONOTEXPIRE_EMAIL')
+EMAIL_HOST_PASSWORD = os.environ.get('DONOTEXPIRE_EMAIL_PASS')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False

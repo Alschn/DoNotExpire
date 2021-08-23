@@ -1,13 +1,11 @@
-from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import ObjectDoesNotExist
-from django.views.generic import DeleteView
-from django.contrib import messages
+from django.shortcuts import render, redirect
 from django.utils import timezone
-from django.core.mail import send_mail
-from django.conf import settings
+from django.views.generic import DeleteView
+
 from .forms import CreateAccountForm, CreateCharacterForm
 from .models import Account, Character
 
@@ -23,20 +21,20 @@ def home(request):
 
 
 @login_required
-def create_char(request, pk):
+def create_char(request, acc_name, **kwargs):
     """Current user can add a new character to the account
-    where he clicked the button to do so. User can have up to 16 characters.
+    where he clicked the button to do so. User can have up to 18 characters.
     """
-    # if current account has 16 chars, then redirect to homepage with message
+    # if current account has 18 chars, then redirect to homepage with message
     # else create form for char creation
     if request.method == "POST":
         c_form = CreateCharacterForm(request.POST)
         if c_form.is_valid():
-            if Account.objects.get(name=pk).chars.all().count() >= 16:
+            if Account.objects.get(name=acc_name).chars.all().count() >= 18:
                 messages.warning(request, "Reached max number of characters per account!")
                 return redirect('home')
             instance = c_form.save(commit=False)
-            instance.acc = Account.objects.get(name=pk)
+            instance.acc = Account.objects.get(name=acc_name)
             acc = instance.acc
             acc.last_visited = timezone.now()
             acc.save()
@@ -48,7 +46,7 @@ def create_char(request, pk):
 
 
 @login_required
-def create_account(request):
+def create_account(request, *args, **kwargs):
     """Current user can add his accounts."""
     if request.method == "POST":
         a_form = CreateAccountForm(request.POST)
@@ -64,10 +62,12 @@ def create_account(request):
 
 
 @login_required
-def update_date(request, name):
-    """Updates character's last_visited datefield."""
+def update_date(request, char_name, **kwargs):
+    """Updates character's last_visited date field.
+    Not used anymore (replaced with api view).
+    """
     if request.method == "POST":
-        char = Character.objects.get(name=name)
+        char = Character.objects.get(name=char_name)
         acc = char.acc
         if char.last_visited and char.expires() < 0:
             char.expired = True
@@ -81,11 +81,14 @@ def update_date(request, name):
         messages.success(request, f"You have just visited {char.name} and refreshed their expiration date!")
         return redirect('home')
 
+
 @login_required
-def delete_char(request):
+def delete_char(request, *args, **kwargs):
     """Delete character working with a button.
     Once the button is clicked, user is asked to confirm their action
-    on the modal that popped up."""
+    on the modal that popped up.
+    Not used anymore (replaced with api view).
+    """
     if 'char_id' in request.POST:
         try:
             char = Character.objects.get(name=request.POST.get('char_id'))

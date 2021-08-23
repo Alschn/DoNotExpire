@@ -23,8 +23,8 @@ def register(request):
 
 @login_required
 def profile(request):
-    profile = request.user.profile
-    accounts = profile.accounts.all()
+    profile_ = request.user.profile
+    accounts = profile_.accounts.all()
 
     page_by = 2
     paginator = Paginator(accounts, page_by)
@@ -33,4 +33,7 @@ def profile(request):
 
     if not accounts:
         paged_accounts = None
-    return render(request, 'profiles/profile.html', {'profile': profile, 'accounts': accounts, 'paged_accounts': paged_accounts})
+    return render(
+        request, 'profiles/profile.html',
+        {'profile': profile, 'accounts': accounts, 'paged_accounts': paged_accounts}
+    )

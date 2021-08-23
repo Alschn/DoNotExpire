@@ -1,11 +1,12 @@
 {% extends 'manager/base.html' %} {% block main %}
-<div class="content-section create-acc">
-  <form action="" method="POST">
-    {% csrf_token %} {{ a_form.as_p }}
-    <div class="create-acc-buttons">
-      <button class="btn-char"><a href="{% url 'home' %}">Exit</a></button>
-      <button class="btn-char" type="submit">Ok</button>
-    </div>
-  </form>
-</div>
-{% endblock main %} {% block additional_js %} {% endblock additional_js %}
+  <div class="content-section create-acc">
+    <form action="" method="POST">
+      {% csrf_token %} {{ a_form.as_p }}
+      <div class="create-acc-buttons">
+        <button class="btn-char"><a href="{% url 'home' %}">Exit</a></button>
+        <button class="btn-char" type="submit">Ok</button>
+      </div>
+    </form>
+  </div>
+{% endblock main %}
+{% block additional_js %}{% endblock additional_js %}
