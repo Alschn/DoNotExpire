@@ -259,7 +259,7 @@ select option {
   transition: all 0.2s;
 }
 
-/* MEDIA QUERRIES */
+/* MEDIA QUERIES */
 @media (min-width: 991px) {
   .container-main {
     padding-left: 125px;
@@ -393,6 +393,10 @@ select option {
 
   button.btn-char.btn-char-create,
   button.btn-char.btn-char-delete {
-    font-size: 10.5px;
+    font-size: 11px;
+  }
+
+  .modal-body {
+    padding: 10px 0 10px 0;
   }
 }

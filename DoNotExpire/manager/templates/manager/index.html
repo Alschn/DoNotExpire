@@ -187,7 +187,7 @@
         const charInfo = charData.querySelector('.char-info.char-expires');
         const alertBox = document.getElementById('message-alert');
         // create new alert, set its attributes, classname and text
-        const alert = document.createElement('div')
+        const alert = document.createElement('div');
         alert.classList.add('alert');
         alert.setAttribute('role', 'alert');
         alert.innerText = message;
@@ -227,7 +227,7 @@
         const parent = charToDelete.parentNode;
         // find button in the current account box
         const accBox = parent.parentElement;
-        const createButton = accBox.querySelector('.btn-char-create')
+        const createButton = accBox.querySelector('.btn-char-create');
         // if account was full previously, enable the create button
         const prevCharCount = Number(createButton.getAttribute('data-char-count'));
         if (prevCharCount === 18) {
@@ -256,7 +256,7 @@
         event.preventDefault();
         const charname = form.attributes['data-char-name'].value;
         bumpLastVisited(charname);
-      })
+      });
     });
 
     // attach submit event listener to delete char form in modal
@@ -296,9 +296,9 @@
     };
 
     const getCharEqFormInputs = (data) => (
-      Object.entries(data).reduce((total, [key, value], i, arr) => {
+      Object.entries(data).reduce((total, [key, value], i) => {
         // first comes id, then char object which should be skipped
-        if (i === 0 || i === 1 || i === arr.length - 1) return total;
+        if (i === 0 || i === 1) return total;
         const upKey = key.charAt(0).toUpperCase() + key.slice(1);
         const formattedKey = upKey.replace(/_/g, ' ');
         if (!value) value = '';
@@ -307,7 +307,7 @@
             <div class="col-4"><label for="${key}">${formattedKey}</label></div>
             <div class="col-8"><input type="text" name="${key}" value="${value}"></div>
         </div>
-        `
+        `;
       }, ``)
     );
 
@@ -338,7 +338,7 @@
                 <div class="modal-body">
                     {% csrf_token %}
                     <div id="${charname}-alert"></div>
-                    <div class="container container-inputs">
+                    <div class="container-inputs">
                         ${getCharEqFormInputs(data)}
                     </div>
                 </div>
@@ -373,13 +373,13 @@
                   alertBox.removeChild(alert);
                 }, 3000);
               }
-            ).catch(err => console.error(err))
-          })
+            ).catch(err => console.error(err));
+          });
           // Show the modal
           jQuery(modal).modal('show');
         }
       ).catch(err => {
-        console.error(err)
+        console.error(err);
       });
     };
   </script>

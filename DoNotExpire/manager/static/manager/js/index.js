@@ -37,7 +37,7 @@ $(document).ready(function () {
     $(delete_btn).attr("disabled", false);
 
     // get new querry only with 'local' chars
-    query = "#" + acc_id + ".clickable";
+    let query = "#" + acc_id + ".clickable";
     let chars = $(query);
     // clickable div within current scope
     chars.click(function () {
