@@ -19,8 +19,8 @@ alphanumeric = RegexValidator(
 
 letters_only = RegexValidator(
     r'^[a-zA-Z\_]{2,15}$',
-    "Character's name should consist of letters only and up to one underscore.\
-     It should be between 2 and 15 characters."
+    "Character's name should consist of letters only and up to one underscore. It should be between 2 and 15 "
+    "characters. "
 )
 
 
