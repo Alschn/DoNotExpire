@@ -133,8 +133,8 @@ dmypy.json
 .vscode
 
 # Static files (except temp file)
-/staticfiles
-!temp
+staticfiles/*
+!staticfiles/.gitkeep
 
 # Coverage files
 coverage
