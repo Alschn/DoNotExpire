@@ -1,13 +1,16 @@
-from django.db import models
+from datetime import timedelta
+
+from django.core.exceptions import ValidationError
 from django.core.validators import (
     RegexValidator,
     MaxValueValidator,
     MinValueValidator,
     MinLengthValidator,
 )
-from DoNotExpire.profiles.models import Profile
-from datetime import timedelta
+from django.db import models
 from django.utils import timezone
+
+from DoNotExpire.profiles.models import Profile
 
 alphanumeric = RegexValidator(
     r'^[0-9a-zA-Z\.\-\_]{2,15}$',
@@ -15,8 +18,21 @@ alphanumeric = RegexValidator(
 )  # and probably more special signs
 
 letters_only = RegexValidator(
-    r'^[a-zA-Z]{2,15}$', 'Character name should consist of letters only. (2 to 15)'
+    r'^[a-zA-Z\_]{2,15}$',
+    "Character's name should consist of letters only and up to one underscore.\
+     It should be between 2 and 15 characters."
 )
+
+
+def underscore_validator(value: str):
+    if value.count('_') > 1:
+        raise ValidationError(
+            "Character's name can consist of at most one underscore!"
+        )
+    elif value.startswith('_') or value.endswith('_'):
+        raise ValidationError(
+            "Character's name cannot start nor end with an underscore!"
+        )
 
 
 class Account(models.Model):
@@ -54,7 +70,7 @@ class Account(models.Model):
 class Character(models.Model):
     name = models.CharField(
         max_length=15,
-        validators=[letters_only],
+        validators=[letters_only, underscore_validator],
         unique=True
     )
     level = models.IntegerField(
