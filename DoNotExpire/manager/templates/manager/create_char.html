@@ -59,33 +59,30 @@
     <img src="{% static 'manager/images/fireplace.gif' %}" alt="">
   </div>
 
-  <div class="char-form">
-    <div id="char-form-popup">
-      <form action="" method="POST">
+  <form action="" method="POST">
+    <div class="char-form">
+      <div id="char-form-popup">
         {% csrf_token %}
         <h6>CHARACTER NAME</h6>
         {{ c_form.name }}
         {{ c_form.level }}<br>
         {{ c_form.char_class }}
         {{ c_form.ladder }}<label for="id_ladder">Ladder Character</label><br>
-        <input type="checkbox" name="EXPANSION" checked id="expansion"><label for="EXPANSION">EXPANSION
-        CHARACTER</label><br>
-        {{ c_form.expansion }}
-        <input type="checkbox" name="HARDCORE" id="hardcore"><label for="HARDCORE">HARDCORE</label><br>
-        {{ c_form.hardcore }}
+        {{ c_form.expansion }}<label for="id_expansion">EXPANSION CHARACTER</label><br>
+        {{ c_form.hardcore }}<label for="id_hardcore">HARDCORE</label><br>
+      </div>
     </div>
-  </div>
 
-  <div class="buttons">
-    <button class="btn-left btn-char">
-      <a href="{% url 'home' %}">EXIT</a>
-    </button>
+    <div class="buttons">
+      <button class="btn-left btn-char">
+        <a href="{% url 'home' %}">EXIT</a>
+      </button>
 
-    <button class="btn-right btn-char" type="submit">
-      OK
-    </button>
-    </form>
-  </div>
+      <button class="btn-right btn-char" type="submit">
+        OK
+      </button>
+    </div>
+  </form>
 
   <script type="text/javascript" src={% static 'manager/js/createChar.js' %}></script>
 {% endblock main %}
