@@ -9,6 +9,8 @@ from django.views.generic import DeleteView
 from .forms import CreateAccountForm, CreateCharacterForm
 from .models import Account, Character
 
+MAXIMUM_CHARACTERS_PER_ACCOUNT = 18
+
 
 def home(request):
     """Home page view if user is logged in or not."""
@@ -30,7 +32,8 @@ def create_char(request, acc_name, **kwargs):
     if request.method == "POST":
         c_form = CreateCharacterForm(request.POST)
         if c_form.is_valid():
-            if Account.objects.get(name=acc_name).chars.all().count() >= 18:
+            if Account.objects.get(name=acc_name).get_all_characters_count() \
+                    >= MAXIMUM_CHARACTERS_PER_ACCOUNT:
                 messages.warning(request, "Reached max number of characters per account!")
                 return redirect('home')
             instance = c_form.save(commit=False)

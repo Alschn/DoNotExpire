@@ -265,7 +265,10 @@ class TestAPIViews(TestCase):
         self.assertEqual(
             response.json(),
             {
-                'name': ['Character name should consist of letters only. (2 to 15)'],
+                'name': [
+                    "Character's name should consist of letters only and up to one underscore. It should be between 2 "
+                    "and 15 characters. "
+                ],
                 'level': ['Ensure this value is less than or equal to 99.'],
                 'char_class': ['"Shaman" is not a valid choice.']
             }

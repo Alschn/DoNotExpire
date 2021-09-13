@@ -99,12 +99,13 @@ input#id_level {
   margin: 2px;
 }
 
-select#id_char_class,
-select#id_hardcore,
-select#id_expansion,
-#id_hardcore,
-#id_expansion {
+select#id_char_class {
   display: none;
+}
+
+.checkbox-disabled {
+  pointer-events: none;
+  opacity: 0.5;
 }
 
 .btn-char {

@@ -17,5 +17,7 @@ class CreateCharacterForm(forms.ModelForm):
         model = Character
         fields = ['name', 'char_class', 'level', 'expansion', 'hardcore', 'ladder']
         widgets = {
-            "ladder": CheckboxInput()
+            "ladder": CheckboxInput(attrs={'checked': False}),
+            "expansion": CheckboxInput(attrs={'checked': True}),
+            "hardcore": CheckboxInput(attrs={'checked': False})
         }

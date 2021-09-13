@@ -35,5 +35,5 @@ def profile(request):
         paged_accounts = None
     return render(
         request, 'profiles/profile.html',
-        {'profile': profile, 'accounts': accounts, 'paged_accounts': paged_accounts}
+        {'profile': profile_, 'accounts': accounts, 'paged_accounts': paged_accounts}
     )
