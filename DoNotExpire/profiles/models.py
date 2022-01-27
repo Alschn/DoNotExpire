@@ -1,5 +1,6 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
+from django.db.models import QuerySet
 
 
 class Profile(models.Model):
@@ -9,25 +10,18 @@ class Profile(models.Model):
     def __str__(self) -> str:
         return f"{self.user.username} Profile - {self.created.strftime('%d/%m/%Y-%H:%M')}"
 
-    def get_all_accounts(self):
+    def get_all_accounts(self) -> QuerySet:
         return self.accounts.all()
 
-    def get_accounts_count(self) -> int:
+    def get_all_accounts_count(self) -> int:
         return self.get_all_accounts().count()
 
-    def get_all_characters(self) -> list:
-        chars = []
-        for acc in self.get_all_accounts():
-            # join two lists by unpacking
-            chars = [*chars, *acc.get_all_characters()]
-        return chars
+    def get_all_characters(self) -> QuerySet:
+        from DoNotExpire.manager.models import Character
+        return Character.objects.filter(acc__profile__user=self.user)
 
-    def get_all_expired_characters(self) -> list:
-        chars = list(filter(lambda char: char.expired, self.get_all_characters()))
-        return chars
+    def get_all_expired_characters(self) -> QuerySet:
+        return self.get_all_characters().filter(expired=True)
 
     def get_all_characters_count(self) -> int:
-        count = 0
-        for acc in self.get_all_accounts():
-            count += acc.get_all_characters_count()
-        return count
+        return self.get_all_characters().count()

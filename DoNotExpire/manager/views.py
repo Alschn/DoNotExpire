@@ -1,13 +1,12 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.views.generic import DeleteView
 
 from .forms import CreateAccountForm, CreateCharacterForm
-from .models import Account, Character
+from .models import Account
 
 MAXIMUM_CHARACTERS_PER_ACCOUNT = 18
 
@@ -62,48 +61,6 @@ def create_account(request, *args, **kwargs):
     else:
         a_form = CreateAccountForm()
     return render(request, 'manager/create_account.html', {"a_form": a_form})
-
-
-@login_required
-def update_date(request, char_name, **kwargs):
-    """Updates character's last_visited date field.
-    Not used anymore (replaced with api view).
-    """
-    if request.method == "POST":
-        char = Character.objects.get(name=char_name)
-        acc = char.acc
-        if char.last_visited and char.expires() < 0:
-            char.expired = True
-            char.save()
-            messages.error(request, f"{char.name} has expired :(")
-            return redirect('home')
-        char.last_visited = timezone.now()
-        acc.last_visited = timezone.now()
-        char.save()
-        acc.save()
-        messages.success(request, f"You have just visited {char.name} and refreshed their expiration date!")
-        return redirect('home')
-
-
-@login_required
-def delete_char(request, *args, **kwargs):
-    """Delete character working with a button.
-    Once the button is clicked, user is asked to confirm their action
-    on the modal that popped up.
-    Not used anymore (replaced with api view).
-    """
-    if 'char_id' in request.POST:
-        try:
-            char = Character.objects.get(name=request.POST.get('char_id'))
-            acc = char.acc
-            acc.last_visited = timezone.now()
-            acc.save()
-            char.delete()
-            messages.success(request, f"{char.name} from account {char.acc} has been deleted")
-        except ObjectDoesNotExist:
-            messages.warning(request, "Select a character to be deleted first!")
-            return redirect('home')
-    return redirect('home')
 
 
 class AccountDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
