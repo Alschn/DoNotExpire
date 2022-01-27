@@ -1,6 +1,6 @@
 {% extends 'manager/base.html' %} {% block main %}
   <h1>{{ profile.user }}</h1>
-  <p>Owned accounts: {{ profile.get_accounts_count }}</p>
+  <p>Owned accounts: {{ profile.get_all_accounts_count }}</p>
   <p>Owned characters: {{ profile.get_all_characters_count }}</p>
 
   {% for account in paged_accounts %}
