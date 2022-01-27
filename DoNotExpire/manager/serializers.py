@@ -73,4 +73,4 @@ class CharacterBumpSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_expires_in(self, obj):
-        return obj.expires()
+        return obj.expires

@@ -8,6 +8,7 @@ from django.core.validators import (
     MinLengthValidator,
 )
 from django.db import models
+from django.db.models import QuerySet
 from django.utils import timezone
 
 from DoNotExpire.profiles.models import Profile
@@ -54,13 +55,13 @@ class Account(models.Model):
     last_visited = models.DateTimeField(default=timezone.now, null=True, blank=True)
     expired = models.BooleanField(default=False, null=True, blank=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.name}  @{self.realm}"
 
-    def get_all_characters(self):
+    def get_all_characters(self) -> QuerySet['Character']:
         return self.chars.all()
 
-    def get_all_characters_count(self):
+    def get_all_characters_count(self) -> int:
         return self.chars.all().count()
 
     class Meta:
@@ -93,7 +94,7 @@ class Character(models.Model):
     hardcore = models.BooleanField(default=False, null=True, blank=True)
     ladder = models.BooleanField(default=False, blank=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.name}: {self.char_class} {self.level}lvl"
 
     def get_class_image(self):
@@ -103,7 +104,8 @@ class Character(models.Model):
                 return pic_name
         return None
 
-    def expires(self):
+    @property
+    def expires(self) -> int:
         expiration_date = self.last_visited + timedelta(days=90)
         days_until = expiration_date - timezone.now()
         return days_until.days

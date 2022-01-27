@@ -2,6 +2,7 @@ from django.utils import timezone
 from rest_framework import status
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
@@ -22,7 +23,7 @@ class CharacterBumpLastVisited(APIView):
     """
     permission_classes = [IsAuthenticated, IsCharOwnerPermission]
 
-    def patch(self, request, *args, **kwargs):
+    def patch(self, request: Request, *args, **kwargs) -> Response:
         char_name = kwargs.get('charname')
         if not char_name:
             return Response(
@@ -38,9 +39,9 @@ class CharacterBumpLastVisited(APIView):
         acc = char.acc
 
         # if character expired, set expired to true
-        if char.last_visited and char.expires() < 0:
+        if char.last_visited and char.expires < 0:
             char.expired = True
-            char.save()
+            char.save(update_fields=['expired'])
             return Response({
                 'message': f"{char.name} has expired :(",
                 'character': CharacterBumpSerializer(char).data
@@ -49,8 +50,9 @@ class CharacterBumpLastVisited(APIView):
         # else bump last_visited fields in char and acc
         char.last_visited = timezone.now()
         acc.last_visited = timezone.now()
-        char.save()
-        acc.save()
+        char.save(update_fields=['last_visited'])
+        acc.save(update_fields=['last_visited'])
+
         return Response({
             'message': f"You have just visited {char.name} and refreshed their expiration date!",
             'character': CharacterBumpSerializer(char).data
@@ -66,7 +68,7 @@ class CharacterEquipmentView(APIView):
     permission_classes = [IsAuthenticated, IsCharOwnerPermission]
     serializer_class = EquipmentSerializer
 
-    def get(self, request, charname):
+    def get(self, request: Request, charname: str) -> Response:
         char = Character.objects.filter(name=charname)
         if not char.exists():
             return Response({'Error': f"Character {charname} not found!"}, status=status.HTTP_404_NOT_FOUND)
@@ -77,7 +79,7 @@ class CharacterEquipmentView(APIView):
         eq_json = self.serializer_class(eq.first())
         return Response(eq_json.data, status=status.HTTP_200_OK)
 
-    def post(self, request, charname):
+    def post(self, request: Request, charname: str) -> Response:
         if not request.data:
             return Response({'Error': 'Received empty request!'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -121,7 +123,7 @@ class CharacterViewSet(ModelViewSet):
             return UpdateCharacterSerializer
         return super().get_serializer_class()
 
-    def create(self, request, *args, **kwargs):
+    def create(self, request: Request, *args, **kwargs) -> Response:
         acc_id = request.data.get('acc')
         prof = request.user.profile.get_all_accounts()
         if not prof.filter(id=acc_id).exists():
