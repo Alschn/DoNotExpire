@@ -16,21 +16,14 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.contrib.auth import views as auth_views
 from django.urls import path, include
-
-from DoNotExpire.profiles import views as profiles_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # include urls from apps
     path('', include('DoNotExpire.manager.urls')),
+    path('', include('DoNotExpire.profiles.urls')),
     path('api/', include('DoNotExpire.api.urls')),
-    path('login/', auth_views.LoginView.as_view(
-        template_name='profiles/login.html',
-        redirect_authenticated_user=True), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(template_name='profiles/logout.html'), name='logout'),
-    path('register/', profiles_views.register, name='register'),
-    path('profile/', profiles_views.profile, name='profile')
 ]
 
 if settings.DEBUG:
