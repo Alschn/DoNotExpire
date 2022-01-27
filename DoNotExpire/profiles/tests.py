@@ -40,31 +40,31 @@ class ProfileTests(TestCase):
         profile = self.user.profile
         actual = Account.objects.filter(profile=profile)
         expected = profile.get_all_accounts()
-        self.assertListEqual(list(actual), list(expected))
+        self.assertQuerysetEqual(actual, expected)
 
     def test_profile_get_accounts_count(self):
         profile = self.user.profile
-        accounts = profile.get_all_accounts()
-        self.assertEqual(len(accounts), 3)
+        accounts_count = profile.get_all_accounts().count()
+        self.assertEqual(accounts_count, 3)
 
     def test_profile_get_all_characters(self):
         chars = self.user.profile.get_all_characters()
         queryset = Character.objects.all()
-        self.assertListEqual(chars, list(queryset))
+        self.assertQuerysetEqual(chars, queryset)
 
     def test_profile_get_all_expired_characters(self):
         expired = self.user.profile.get_all_expired_characters()
-        self.assertEqual(len(expired), 0)
+        self.assertEqual(expired.count(), 0)
         self.char6.expired = True
-        self.char6.save()
+        self.char6.save(update_fields=['expired'])
         expired = self.user.profile.get_all_expired_characters()
-        self.assertEqual(len(expired), 1)
-        self.assertEqual(expired[0], self.char6)
+        self.assertEqual(expired.count(), 1)
+        self.assertEqual(expired.first(), self.char6)
 
     def test_profile_get_all_characters_count(self):
         chars = self.user.profile.get_all_characters()
         count = self.user.profile.get_all_characters_count()
-        self.assertEqual(len(chars), count)
+        self.assertEqual(chars.count(), count)
         self.assertEqual(count, 6)
 
     def test_profile_accounts_are_your_own(self):
@@ -76,6 +76,6 @@ class ProfileTests(TestCase):
             name="Test", profile=user2.profile, realm="Asia")
         accounts = user2.profile.get_all_accounts()
         queryset = Account.objects.filter(profile=user2.profile)
-        self.assertEqual(len(accounts), 1)
-        self.assertEqual(accounts[0], acc)
-        self.assertEqual(queryset[0], acc)
+        self.assertEqual(accounts.count(), 1)
+        self.assertEqual(accounts.first(), acc)
+        self.assertEqual(queryset.first(), acc)
