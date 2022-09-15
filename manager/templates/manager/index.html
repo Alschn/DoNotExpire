@@ -1,0 +1,386 @@
+{% extends 'manager/base.html' %}
+{% load static %}
+{% block css_chars %}
+{% endblock css_chars %}
+
+{% block main %}
+  <div class="main">
+
+    <div class="container container-main">
+      {% if not user.is_authenticated %}
+        <div class="content-section" style="text-align: center">
+          <p>Log in first to access our website. <a href="{% url 'login' %}">Sign in</a></p>
+          <p>Do not have an account? <a href="{% url 'register' %}">Sign up</a></p>
+        </div>
+      {% else %}
+
+        <p>Hi,
+          <a style="color:white" href={% url 'profile' %}>{{ user.username }}</a>
+          <a class="float-right" href="{% url 'logout' %}">Logout</a>
+        </p>
+        <p>Add new account <a href="{% url 'account-create' %}" style="color:white">Click here</a></p>
+
+      {% endif %}
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <div id="message-alert"></div>
+
+      {% if user.is_authenticated and user_accounts %}
+        {% for account in user_accounts %}
+          <div class="account-box">
+            <div class="account-header">
+              <span>{{ account }}:</span>
+              <span>
+                <a class="float-right del-acc" href="{% url 'account-detail-delete' pk=account.pk %}">Delete Account</a>
+              </span>
+            </div>
+
+            <div class="row custom-border-header char-name-label">
+              <h2 id="char-name-label-{{ account.id }}">{{ account.name }}</h2>
+            </div>
+
+            <div class="row custom-border chars-box" id="chars-box-{{ account.id }}">
+              {% for char in account.chars.all %}
+                <div
+                    class="col col-char clickable col-6"
+                    onclick="changeText('{{ char.name }}', '{{ account.id }}')"
+                    id="{{ account.name }}" data-char="{{ char.name }}"
+                >
+                  <div class="char-img">
+                    <img src="{% get_static_prefix %}{{ char.get_class_image }}" alt="">
+                  </div>
+
+                  <div class="char-data" data-char="{{ char.name }}">
+                    {% if char.hardcore %}
+                      <span class="hardcore" onclick="createModalOnClick('{{ char.name }}')">{{ char.name }}</span><br>
+                    {% else %}
+                      <span onclick="createModalOnClick('{{ char.name }}')">{{ char.name }}</span><br>
+                    {% endif %}
+
+                    <span class="char-info">Level {{ char.level }} {{ char.char_class }}</span><br>
+
+                    {% if char.expansion %}
+                      <span class="expansion">Expansion character</span><br>
+                    {% endif %}
+
+                    {% if char.ladder %}
+                      Ladder character<br>
+                    {% endif %}
+
+                    {% if char.last_visited %}
+                      {% if not char.expired and char.expires > 0 and char.expires <= 60 %}
+                        <span class="char-info char-expires">Expires in {{ char.expires }} days</span>
+                      {% elif not char.expired and char.expires > 60 %}
+                      {% else %}
+                        <span class="hardcore">Character expired</span>
+                      {% endif %}
+                    {% endif %}
+
+                    {% if not char.expired and char.expires > 0 %}
+                      <form action="" data-char-name="{{ char.name }}" class="char-bump-form">
+                        {% csrf_token %}
+                        <button class="btn-update" type="submit" name="update_date">Update</button>
+                      </form>
+                    {% endif %}
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+
+            <div class="row custom-border-bottom">
+              <div class="col button-box">
+                <form action="{% url 'account-detail-character-create' account.name %}" method="POST">
+                  {% csrf_token %}
+                  <button
+                      class="btn-char btn-char-create float-left"
+                      data-char-count="{{ account.chars.all.count }}"
+                  >
+                    Create New<br>Character
+                  </button>
+                </form>
+              </div>
+
+              <div class="col button-box">
+                <input type="hidden" name="char_id" value="" id="{{ account.name }}">
+                <button
+                    class="btn-char btn-char-delete btn-char-disabled float-right"
+                    data-acc="{{ account.name }}"
+                    type="button"
+                    disabled
+                    data-toggle="modal"
+                    data-target="#ModalCenter"
+                    onclick="setCharDelete(this)">
+                  Delete <br>Character
+                </button>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+
+        <!-- Delete character modal -->
+        <div
+            class="modal fade" id="ModalCenter" tabindex="-1"
+            role="dialog" aria-labelledby="deleteModal" aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-body text-center">
+                Are you sure you want to delete this character? <br>
+                Take Note: This will delete all versions of this character
+              </div>
+              <div class="modal-buttons">
+                <button type="button" class="btn-char btn-left" data-dismiss="modal">No</button>
+
+                <form action="" enctype="multipart/form-data"
+                      class="char-delete-form">
+                  {% csrf_token %}
+                  <input type="hidden" name="char_id" value="" id="modal-delete">
+                  <button
+                      type="submit"
+                      class="btn-char btn-right"
+                      data-acc="{{ account.name }}"
+                  >
+                    Yes
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    const getCookie = (name) => {
+      let cookieValue;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          let cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    };
+
+    const bumpLastVisited = (char_name) => {
+      fetch(`/api/characters/${char_name}/bump/`, {
+        method: "PATCH",
+        headers: {
+          'Accept': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken'),
+        },
+      }).then(res => res.json()).then((data) => {
+        const {message, character: {expired}} = data;
+        const charData = document.querySelector(`.char-data[data-char=${char_name}]`);
+        const charInfo = charData.querySelector('.char-info.char-expires');
+        const alertBox = document.getElementById('message-alert');
+        // create new alert, set its attributes, classname and text
+        const alert = document.createElement('div');
+        alert.classList.add('alert');
+        alert.setAttribute('role', 'alert');
+        alert.innerText = message;
+
+        if (!expired) {
+          if (charInfo) charInfo.innerHTML = '';
+          alert.classList.add('alert-success');
+        } else {
+          const deleteForm = charData.lastElementChild;
+          if (charInfo) {
+            charInfo.classList.add('hardcore');
+            charInfo.innerHTML = 'Character expired';
+          }
+          charData.removeChild(deleteForm);
+          alert.classList.add('alert-danger');
+        }
+        alertBox.appendChild(alert);
+
+        setTimeout(() => {
+          alertBox.removeChild(alertBox.lastChild);
+        }, 3000);
+      }).catch(err => console.log(err));
+    };
+
+    const deleteCharacter = (char_name) => {
+      fetch(`/api/characters/${char_name}/`, {
+        method: 'DELETE',
+        headers: {
+          'Accept': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken'),
+        },
+      }).then(() => {
+        // close delete modal
+        $('#ModalCenter').modal('hide');
+        // get char and remove it
+        const charToDelete = document.querySelector(`.col-char[data-char="${char_name}"]`);
+        const parent = charToDelete.parentNode;
+        // find button in the current account box
+        const accBox = parent.parentElement;
+        const createButton = accBox.querySelector('.btn-char-create');
+        // if account was full previously, enable the create button
+        const prevCharCount = Number(createButton.getAttribute('data-char-count'));
+        if (prevCharCount === 18) {
+          createButton.disabled = false;
+          createButton.classList.remove('btn-char-disabled');
+        }
+
+        parent.removeChild(charToDelete);
+
+        // display alert
+        const alertBox = document.getElementById('message-alert');
+        const alert = document.createElement('div');
+        alert.classList.add('alert', 'alert-success');
+        alert.innerText = `${char_name} from account ${charToDelete.id} has been deleted!`;
+        alertBox.appendChild(alert);
+        // remove alert after 3s
+        setTimeout(() => {
+          alertBox.removeChild(alert);
+        }, 3000);
+      }).catch(err => console.log(err));
+    };
+
+    // attach submit event listener to each char last visited bump form
+    document.querySelectorAll(".char-bump-form").forEach((form) => {
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const charname = form.attributes['data-char-name'].value;
+        bumpLastVisited(charname);
+      });
+    });
+
+    // attach submit event listener to delete char form in modal
+    document.querySelector('.char-delete-form').addEventListener('submit', (event) => {
+        event.preventDefault();
+        const form = event.target;
+        // second child - hidden input with char name
+        const charName = form[1].value;
+        deleteCharacter(charName);
+      }
+    );
+
+    const setCharDelete = (clicked) => {
+      const deleteModalInputField = document.querySelector('#modal-delete');
+      const hiddenInput = clicked.parentNode.firstElementChild;
+      deleteModalInputField.value = hiddenInput.value;
+    };
+
+    const getModal = () => document.getElementById('charDetailsModal');
+
+    const setModalContent = (html) => getModal().querySelector('.modal-content').innerHTML = html;
+
+    const initModal = () => {
+      const modal = document.createElement('div');
+      modal.classList.add('modal', 'fade');
+      modal.setAttribute('id', 'charDetailsModal');
+      modal.setAttribute('tabindex', '-1');
+      modal.setAttribute('role', 'dialog');
+      modal.setAttribute('aria-labelledby', 'charDetailsModalLabel');
+      modal.setAttribute('aria-hidden', 'true');
+      modal.innerHTML =
+        '<div class="modal-dialog" role="document">' +
+        '<div class="modal-content"></div>' +
+        '</div>';
+      document.body.appendChild(modal);
+      return modal;
+    };
+
+    const getCharEqFormInputs = (data) => (
+      Object.entries(data).reduce((total, [key, value], i) => {
+        // first comes id, then char object which should be skipped
+        if (i === 0 || i === 1) return total;
+        const upKey = key.charAt(0).toUpperCase() + key.slice(1);
+        const formattedKey = upKey.replace(/_/g, ' ');
+        if (!value) value = '';
+        return total += `
+        <div class="row">
+            <div class="col-4"><label for="${key}">${formattedKey}</label></div>
+            <div class="col-8"><input type="text" name="${key}" value="${value}"></div>
+        </div>
+        `;
+      }, ``)
+    );
+
+    const createModalOnClick = (charname) => {
+      fetch(`/api/characters/${charname}/equipment/`, {
+        method: "GET",
+        headers: {
+          'Accept': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken'),
+        },
+      }).then(
+        response => response.json()
+      ).then(
+        data => {
+          let modal = getModal();
+          // Init the modal if it hasn't been already.
+          if (!modal) modal = initModal();
+
+          // Set modal content
+          const html =
+            `<form method="POST" action="" id="${charname}-eq">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="charDetailsModalLabel">${charname}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div id="${charname}-alert"></div>
+                    <div class="container-inputs">
+                        ${getCharEqFormInputs(data)}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+            `;
+          setModalContent(html);
+
+          // On form submit, send request to API
+          const form = document.getElementById(`${charname}-eq`);
+          form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const form_data = new FormData(e.target);
+            fetch(`/api/characters/${charname}/equipment/`, {
+                method: "POST",
+                headers: {
+                  'Accept': 'application/json',
+                  'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: form_data,
+              }
+            ).then(() => {
+                const alertBox = document.getElementById(`${charname}-alert`);
+                const alert = document.createElement('div');
+                alert.classList.add('alert', 'alert-success');
+                alert.innerText = `Successfully updated ${charname}'s inventory!`;
+                alertBox.appendChild(alert);
+                setTimeout(() => {
+                  alertBox.removeChild(alert);
+                }, 3000);
+              }
+            ).catch(err => console.error(err));
+          });
+          // Show the modal
+          jQuery(modal).modal('show');
+        }
+      ).catch(err => {
+        console.error(err);
+      });
+    };
+  </script>
+{% endblock main %}
