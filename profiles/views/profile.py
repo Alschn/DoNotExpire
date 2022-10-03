@@ -8,7 +8,6 @@ class ProfileView:
     pass
 
 
-
 @login_required
 def profile(request):
     profile_ = request.user.profile
@@ -22,6 +21,6 @@ def profile(request):
     if not accounts:
         paged_accounts = None
     return render(
-        request, 'profiles/templates/profiles/profile.html',
+        request, 'profiles/profile.html',
         {'profile': profile_, 'accounts': accounts, 'paged_accounts': paged_accounts}
     )
