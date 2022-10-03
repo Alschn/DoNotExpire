@@ -1,0 +1,89 @@
+{% extends 'manager/base.html' %}
+
+{% load static %}
+
+{% block css_links %}
+{% endblock css_links %}
+
+{% block nav_img %}
+{% endblock nav_img %}
+
+
+{% block main %}
+  <h1 class="title-select">SELECT HERO CLASS</h1>
+
+  <div>
+    <h1 class="title-class" id="class-name">CLASSNAME</h1>
+    <p class="class-description" id="class-description">DESCRIPTION OF A CLASS</p>
+  </div>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="row">
+    <div class="col">
+      <img src="{% static 'manager/images/create_amazon.gif' %}" class="img-fluid" id="amazon" alt="">
+    </div>
+
+    <div class="col">
+      <img src="{% static 'manager/images/create_assassin.gif' %}" class="img-fluid img-assassin" id="assassin" alt="">
+    </div>
+
+    <div class="col">
+      <img src="{% static 'manager/images/create_necromancer.gif' %}" class="img-fluid" id="necromancer" alt="">
+    </div>
+
+    <div class="col">
+      <img src="{% static 'manager/images/create_barbarian.gif' %}" class="img-fluid" id="barbarian" alt="">
+    </div>
+
+    <div class="col">
+      <img src="{% static 'manager/images/create_paladin.gif' %}" class="img-fluid" id="paladin" alt="">
+    </div>
+
+    <div class="col">
+      <img src="{% static 'manager/images/create_sorceress.gif' %}" class="img-fluid" id="sorceress" alt="">
+    </div>
+
+    <div class="col">
+      <img src="{% static 'manager/images/create_druid.gif' %}" class="img-fluid" id="druid" alt="">
+    </div>
+  </div>
+
+  <div class="fireplace">
+    <img src="{% static 'manager/images/fireplace.gif' %}" alt="">
+  </div>
+
+  <form action="" method="POST">
+    <div class="char-form">
+      <div id="char-form-popup">
+        {% csrf_token %}
+        <h6>CHARACTER NAME</h6>
+        {{ form.name }}
+        {{ form.level }}<br>
+        {{ form.char_class }}
+        {{ form.ladder }}<label for="id_ladder">Ladder Character</label><br>
+        {{ form.expansion }}<label for="id_expansion">EXPANSION CHARACTER</label><br>
+        {{ form.hardcore }}<label for="id_hardcore">HARDCORE</label><br>
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button class="btn-left btn-char">
+        <a href="{% url 'home' %}">EXIT</a>
+      </button>
+
+      <button class="btn-right btn-char" type="submit">
+        OK
+      </button>
+    </div>
+  </form>
+
+  <script type="text/javascript" src={% static 'manager/js/createChar.js' %}></script>
+{% endblock main %}
+
