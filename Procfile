@@ -1,2 +1,2 @@
 release: python manage.py migrate --no-input
-web: gunicorn DoNotExpire.wsgi
+web: gunicorn core.wsgi
