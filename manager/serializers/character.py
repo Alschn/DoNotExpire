@@ -41,7 +41,7 @@ class CharacterBumpSerializer(serializers.ModelSerializer):
         model = Character
         fields = (
             'id', 'name', 'level', 'char_class', 'acc',
-            'last_visited', 'expired', 'expansion', 'hardcore', 'ladder',
+            'last_visited', 'expires_in', 'expired', 'expansion', 'hardcore', 'ladder',
         )
 
     def get_expires_in(self, obj: Character):

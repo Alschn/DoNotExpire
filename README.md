@@ -91,3 +91,13 @@ coverage run manage.py test
 
 coverage report -m
 ```
+
+## Deployment to Heroku
+
+Set env variables in dashboard settings or with CLI
+
+```dotenv
+SECRET_KEY=
+PRODUCTION_HOST=<app_name>.herokuapp.com
+DJANGO_SETTINGS_MODULE=core.settings.prod
+```
