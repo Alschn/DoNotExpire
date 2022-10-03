@@ -179,6 +179,7 @@
         method: "PATCH",
         headers: {
           'Accept': 'application/json',
+          'Content-Type': 'application/json',
           'X-CSRFToken': getCookie('csrftoken'),
         },
       }).then(res => res.json()).then((data) => {
@@ -217,6 +218,7 @@
         method: 'DELETE',
         headers: {
           'Accept': 'application/json',
+          'Content-Type': 'application/json',
           'X-CSRFToken': getCookie('csrftoken'),
         },
       }).then(() => {
@@ -316,6 +318,7 @@
         method: "GET",
         headers: {
           'Accept': 'application/json',
+          'Content-Type': 'application/json',
           'X-CSRFToken': getCookie('csrftoken'),
         },
       }).then(
@@ -359,6 +362,7 @@
                 method: "POST",
                 headers: {
                   'Accept': 'application/json',
+                  'Content-Type': 'application/json',
                   'X-CSRFToken': getCookie('csrftoken'),
                 },
                 body: form_data,
