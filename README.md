@@ -15,34 +15,79 @@
 
 # Overview:
 
-Multiplayer Diablo II characters expire if they are inactive for too long. Expired characters cannot be recovered. Single Player characters do not expire.
+Multiplayer Diablo II characters expire if they are inactive for too long. Expired characters cannot be recovered.
+Single Player characters do not expire.
 
-**Newly created characters will expire after 10 days of inactivity. Characters played for two hours or more will expire after 90 days of inactivity.** To reset the inactivity timer on a character, you need to log in to an active game with that character and buy or sell an item, or kill a monster.
+**Newly created characters will expire after 10 days of inactivity. Characters played for two hours or more will expire
+after 90 days of inactivity.** To reset the inactivity timer on a character, you need to log in to an active game with
+that character and buy or sell an item, or kill a monster.
 
 Diablo II **accounts are also deleted after 90 days of inactivity.**
 
-Thanks to DoNotExpire you can keep track of all your accounts. Log in and add your accounts, which hold up to 16 characters, to the database.  
-Whenever you log into your Diablo 2 account, open the website and press the button next to the character you have just 'permed' ingame. The expiration date for this character will refresh on the website and you will be able to manually follow those dates.  
-Should you not perm your character and update the info on website, you will be sent an email with a notification to do so.
+Thanks to DoNotExpire you can keep track of all your accounts. Log in and add your accounts, which hold up to 16
+characters, to the database.  
+Whenever you log into your Diablo 2 account, open the website and press the button next to the character you have just '
+permed' ingame. The expiration date for this character will refresh on the website and you will be able to manually
+follow those dates.  
+Should you not perm your character and update the info on website, you will be sent an email with a notification to do
+so.
 
-If you keep forgetting to sync your Diablo 2 accounts state with website data, create a simple script to open both your browser with this website and Diablo 2 game instance at the same time. This way you will most likely remember to update the dates.
+If you keep forgetting to sync your Diablo 2 accounts state with website data, create a simple script to open both your
+browser with this website and Diablo 2 game instance at the same time. This way you will most likely remember to update
+the dates.
 
-## Installation (dev)
+## Development Setup
 
-git clone https://github.com/Alschn/CoreRepetition.git
+Create `.env` file with the following content:
 
-Set **SECRET_KEY** enviromental variable
+```dotenv
+SECRET_KEY=your_secret_key
+```
 
-    py -3 -m venv venv
+Create virtual environment, activate it and install requirements with pipenv
 
-    venv\Scripts\activate
+```bash
+mkdir .venv
 
-    pip install -r requirements.txt
+pipenv shell
 
-    python manage.py makemigrations
+pipenv install
+```
 
-    python manage.py migrate
+**or** with virtualenv
 
-    python manage.py createsuperuser
+```bash
+py -3 -m venv venv
 
-    python manage.py runserver
+venv\Scripts\Activate
+
+pip install -r requirements.txt
+```
+
+Run migrations
+
+```bash
+python manage.py makemigrations
+
+python manage.py migrate
+```
+
+Create superuser
+
+```bash
+python manage.py createsuperuser
+```
+
+Run server
+
+```bash
+python manage.py runserver
+```
+
+Run unit tests and get code coverage
+
+```bash
+coverage run manage.py test
+
+coverage report -m
+```
