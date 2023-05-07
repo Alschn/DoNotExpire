@@ -15,7 +15,6 @@ class AccountDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self) -> bool:
         """Checks if current user is the creator of this account."""
 
-        acc = self.get_object()
-        if acc in self.request.user.profile.accounts.all():
-            return True
-        return False
+        account = self.get_object()
+        user = self.request.user
+        return user.profile.accounts.contains(account)

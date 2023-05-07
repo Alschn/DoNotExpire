@@ -10,8 +10,21 @@ class EquipmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Equipment
         fields = (
-            'id', 'char', 'helmet', 'armor', 'belt', 'gloves',
-            'boots', 'amulet', 'left_ring', 'right_ring',
-            'main_hand', 'off_hand', 'switch_main_hand',
-            'switch_off_hand', 'torch', 'anni', 'charms'
+            'id',
+            'char',
+            'helmet',
+            'armor',
+            'belt',
+            'gloves',
+            'boots',
+            'amulet',
+            'left_ring',
+            'right_ring',
+            'main_hand',
+            'off_hand',
+            'switch_main_hand',
+            'switch_off_hand',
+            'torch',
+            'anni',
+            'charms'
         )
