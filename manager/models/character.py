@@ -46,6 +46,14 @@ class Character(models.Model):
                 return f"manager/images/{pic_name}"
         return None
 
+    def update_last_visited(self) -> None:
+        self.last_visited = timezone.now()
+        self.save(update_fields=['last_visited'])
+
+    def update_expired(self) -> None:
+        self.expired = self.expires < 0
+        self.save(update_fields=['expired'])
+
     @property
     def expires(self) -> int:
         expiration_date = self.last_visited + timedelta(days=90)
