@@ -116,7 +116,8 @@
                     disabled
                     data-toggle="modal"
                     data-target="#ModalCenter"
-                    onclick="setCharDelete(this)">
+                    onclick="setCharDelete(this)"
+                >
                   Delete <br>Character
                 </button>
               </div>
@@ -159,7 +160,7 @@
   </div>
 
   <script type="text/javascript">
-    const getCookie = (name) => {
+    function getCookie(name) {
       let cookieValue;
       if (document.cookie && document.cookie !== '') {
         const cookies = document.cookie.split(';');
@@ -172,19 +173,53 @@
         }
       }
       return cookieValue;
-    };
+    }
 
-    const bumpLastVisited = (char_name) => {
-      fetch(`/api/characters/${char_name}/bump/`, {
-        method: "PATCH",
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'X-CSRFToken': getCookie('csrftoken'),
-        },
-      }).then(res => res.json()).then((data) => {
+    function getFetchHeaders() {
+      return {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken'),
+      };
+    }
+
+    class CharactersAPI {
+      static bump(charName) {
+        return fetch(`/api/characters/${charName}/bump/`, {
+          method: "PATCH",
+          headers: getFetchHeaders(),
+        });
+      }
+
+      static delete(charName) {
+        return fetch(`/api/characters/${charName}/`, {
+          method: "DELETE",
+          headers: getFetchHeaders(),
+        });
+      }
+
+      static getEquipment(charName) {
+        return fetch(`/api/characters/${charName}/equipment/`, {
+          method: "GET",
+          headers: getFetchHeaders(),
+        });
+      }
+
+      static updateEquipment(charName, jsonData) {
+        return fetch(`/api/characters/${charName}/equipment/`, {
+          method: "POST",
+          headers: getFetchHeaders(),
+          body: jsonData,
+        });
+      }
+    }
+
+    const bumpLastVisited = (charName) => {
+      CharactersAPI.bump(charName).then(
+        res => res.json()
+      ).then((data) => {
         const {message, character: {expired}} = data;
-        const charData = document.querySelector(`.char-data[data-char=${char_name}]`);
+        const charData = document.querySelector(`.char-data[data-char=${charName}]`);
         const charInfo = charData.querySelector('.char-info.char-expires');
         const alertBox = document.getElementById('message-alert');
         // create new alert, set its attributes, classname and text
@@ -213,19 +248,12 @@
       }).catch(err => console.log(err));
     };
 
-    const deleteCharacter = (char_name) => {
-      fetch(`/api/characters/${char_name}/`, {
-        method: 'DELETE',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'X-CSRFToken': getCookie('csrftoken'),
-        },
-      }).then(() => {
+    const deleteCharacter = (charName) => {
+      CharactersAPI.delete(charName).then(() => {
         // close delete modal
         $('#ModalCenter').modal('hide');
         // get char and remove it
-        const charToDelete = document.querySelector(`.col-char[data-char="${char_name}"]`);
+        const charToDelete = document.querySelector(`.col-char[data-char="${charName}"]`);
         const parent = charToDelete.parentNode;
         // find button in the current account box
         const accBox = parent.parentElement;
@@ -243,7 +271,7 @@
         const alertBox = document.getElementById('message-alert');
         const alert = document.createElement('div');
         alert.classList.add('alert', 'alert-success');
-        alert.innerText = `${char_name} from account ${charToDelete.id} has been deleted!`;
+        alert.innerText = `${charName} from account ${charToDelete.id} has been deleted!`;
         alertBox.appendChild(alert);
         // remove alert after 3s
         setTimeout(() => {
@@ -256,8 +284,8 @@
     document.querySelectorAll(".char-bump-form").forEach((form) => {
       form.addEventListener('submit', (event) => {
         event.preventDefault();
-        const charname = form.attributes['data-char-name'].value;
-        bumpLastVisited(charname);
+        const charName = form.attributes['data-char-name'].value;
+        bumpLastVisited(charName);
       });
     });
 
@@ -313,16 +341,9 @@
       }, ``)
     );
 
-    const createModalOnClick = (charname) => {
-      fetch(`/api/characters/${charname}/equipment/`, {
-        method: "GET",
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'X-CSRFToken': getCookie('csrftoken'),
-        },
-      }).then(
-        response => response.json()
+    const createModalOnClick = (charName) => {
+      CharactersAPI.getEquipment(charName).then(
+        res => res.json()
       ).then(
         data => {
           let modal = getModal();
@@ -331,16 +352,16 @@
 
           // Set modal content
           const html =
-            `<form method="POST" action="" id="${charname}-eq">
+            `<form method="POST" action="" id="${charName}-eq">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="charDetailsModalLabel">${charname}</h5>
+                    <h5 class="modal-title" id="charDetailsModalLabel">${charName}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     {% csrf_token %}
-                    <div id="${charname}-alert"></div>
+                    <div id="${charName}-alert"></div>
                     <div class="container-inputs">
                         ${getCharEqFormInputs(data)}
                     </div>
@@ -354,30 +375,26 @@
           setModalContent(html);
 
           // On form submit, send request to API
-          const form = document.getElementById(`${charname}-eq`);
+          const form = document.getElementById(`${charName}-eq`);
           form.addEventListener('submit', (e) => {
             e.preventDefault();
-            const form_data = new FormData(e.target);
-            fetch(`/api/characters/${charname}/equipment/`, {
-                method: "POST",
-                headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json',
-                  'X-CSRFToken': getCookie('csrftoken'),
-                },
-                body: form_data,
-              }
-            ).then(() => {
-                const alertBox = document.getElementById(`${charname}-alert`);
+            const formData = new FormData(e.target);
+            const plainFormData = Object.fromEntries(formData.entries());
+            const formDataJsonString = JSON.stringify(plainFormData);
+            CharactersAPI.updateEquipment(charName, formDataJsonString).then(
+              () => {
+                const alertBox = document.getElementById(`${charName}-alert`);
                 const alert = document.createElement('div');
                 alert.classList.add('alert', 'alert-success');
-                alert.innerText = `Successfully updated ${charname}'s inventory!`;
+                alert.innerText = `Successfully updated ${charName}'s inventory!`;
                 alertBox.appendChild(alert);
                 setTimeout(() => {
                   alertBox.removeChild(alert);
                 }, 3000);
               }
-            ).catch(err => console.error(err));
+            ).catch(
+              err => console.error(err)
+            );
           });
           // Show the modal
           jQuery(modal).modal('show');
