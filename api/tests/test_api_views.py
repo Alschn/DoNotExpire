@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
 from rest_framework.status import (
     HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT,
-    HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND,
+    HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND,
 )
 from rest_framework.test import APIRequestFactory, APIClient
 
@@ -57,7 +57,7 @@ class TestAPIViews(TestCase):
 
     def test_is_not_authenticated(self):
         response = self.client.post(f'/api/characters/{self.char.name}/', {})
-        self.assertEqual(response.status_code, HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
 
     def test_is_authenticated(self):
         self._require_login()
@@ -191,7 +191,7 @@ class TestAPIViews(TestCase):
 
     def test_list_characters_user_not_authenticated(self):
         response = self.client.get('/api/characters/')
-        self.assertEqual(response.status_code, HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
 
     def test_create_new_character(self):
         self._require_login()
@@ -328,7 +328,7 @@ class TestAPIViews(TestCase):
 
     def test_list_accounts_not_authenticated(self):
         response = self.client.get('/api/accounts/')
-        self.assertEqual(response.status_code, HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
 
     def test_create_new_account(self):
         self._require_login()

@@ -23,16 +23,17 @@ MIDDLEWARE = [
 DATABASE_URL = os.environ['DATABASE_URL']
 
 db_from_env = dj_database_url.config(
-    default=DATABASE_URL, conn_max_age=500, ssl_require=True
+    default=DATABASE_URL,
+    conn_max_age=500,
+    conn_health_checks=True,
+    ssl_require=True
 )
 
 DATABASES['default'].update(db_from_env)
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
     ),
 
     # disable browsable API in production
@@ -40,3 +41,7 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
     )
 }
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://" + os.environ['PRODUCTION_HOST'],
+]
