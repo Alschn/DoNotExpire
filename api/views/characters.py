@@ -1,7 +1,7 @@
 from typing import Any
 
+from django.db import transaction
 from django.db.models import QuerySet
-from django.utils import timezone
 from rest_framework import viewsets, status
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.decorators import action
@@ -61,6 +61,7 @@ class CharactersViewSet(viewsets.ModelViewSet):
         character = self.get_object()
         serializer.save(acc=character.acc)
 
+    @transaction.atomic
     @action(
         detail=True, methods=['PATCH'], url_name='bump',
         permission_classes=[IsAuthenticated]
@@ -71,18 +72,15 @@ class CharactersViewSet(viewsets.ModelViewSet):
 
         # if character expired, set expired to true
         if character.last_visited and character.expires < 0:
-            character.expired = True
-            character.save(update_fields=['expired'])
+            character.update_expired()
             return Response({
                 'message': f"{character.name} has expired :(",
                 'character': CharacterBumpSerializer(character).data
             }, status=status.HTTP_200_OK)
 
-        # else bump last_visited fields in char and acc
-        character.last_visited = timezone.now()
-        account.last_visited = timezone.now()
-        character.save(update_fields=['last_visited'])
-        account.save(update_fields=['last_visited'])
+        # else bump last_visited fields in char and account
+        account.update_last_visited()
+        character.update_last_visited()
 
         return Response({
             'message': f"You have just visited {character.name} and refreshed their expiration date!",

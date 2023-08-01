@@ -1,12 +1,15 @@
+from django.db.models import QuerySet
 from rest_framework import serializers
 
 from manager.models import Account, Character
 
 
 class AccountForeignKey(serializers.PrimaryKeyRelatedField):
-    def get_queryset(self):
-        if self.context.get('request'):
-            return Account.objects.filter(profile__user=self.context['request'].user)
+
+    def get_queryset(self) -> QuerySet[Account]:
+        if request := self.context.get('request'):
+            return Account.objects.filter(profile__user=request.user)
+
         return super().get_queryset()
 
 
@@ -16,8 +19,16 @@ class CharacterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Character
         fields = (
-            'id', 'name', 'level', 'char_class', 'acc',
-            'last_visited', 'expired', 'expansion', 'hardcore', 'ladder',
+            'id',
+            'name',
+            'level',
+            'char_class',
+            'acc',
+            'last_visited',
+            'expired',
+            'expansion',
+            'hardcore',
+            'ladder',
         )
 
 
@@ -30,8 +41,7 @@ class CreateCharacterSerializer(CharacterSerializer):
 class UpdateCharacterSerializer(CharacterSerializer):
     last_visited = serializers.DateTimeField(required=False)
     expired = serializers.BooleanField(required=False)
-    # not possible to change character's name
-    name = serializers.CharField(read_only=True)
+    name = serializers.CharField(read_only=True)  # not possible to change character's name
 
 
 class CharacterBumpSerializer(serializers.ModelSerializer):
@@ -40,8 +50,17 @@ class CharacterBumpSerializer(serializers.ModelSerializer):
     class Meta:
         model = Character
         fields = (
-            'id', 'name', 'level', 'char_class', 'acc',
-            'last_visited', 'expires_in', 'expired', 'expansion', 'hardcore', 'ladder',
+            'id',
+            'name',
+            'level',
+            'char_class',
+            'acc',
+            'last_visited',
+            'expires_in',
+            'expired',
+            'expansion',
+            'hardcore',
+            'ladder',
         )
 
     def get_expires_in(self, obj: Character):

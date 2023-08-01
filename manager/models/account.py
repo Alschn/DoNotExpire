@@ -35,5 +35,9 @@ class Account(models.Model):
     def get_all_characters_count(self) -> int:
         return self.chars.all().count()
 
+    def update_last_visited(self) -> None:
+        self.last_visited = timezone.now()
+        self.save(update_fields=['last_visited'])
+
     class Meta:
         ordering = ['id']

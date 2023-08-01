@@ -1,6 +1,7 @@
 from django.contrib import admin
-from .models import Profile
+
 from manager.models import Account
+from .models import Profile
 
 
 class AccountsInline(admin.TabularInline):
@@ -8,9 +9,10 @@ class AccountsInline(admin.TabularInline):
 
 
 class ProfilesAdmin(admin.ModelAdmin):
-    inlines = [
+    list_select_related = ('user',)
+    inlines = (
         AccountsInline,
-    ]
+    )
 
 
 admin.site.register(Profile, ProfilesAdmin)
