@@ -5,7 +5,9 @@
     <img alt="HTML" src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white">
     <img alt="CSS" src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white">
     <img alt="JavaScript" src="https://img.shields.io/badge/javascript%20-%23323330.svg?&style=for-the-badge&logo=javascript&logoColor=%23F7DF1E"/>
-    <img alt="Heroku" src="https://img.shields.io/badge/Heroku-430098?style=for-the-badge&logo=heroku&logoColor=white">
+    <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt=""/>
+    <img src="https://img.shields.io/badge/Docker-008FCC?style=for-the-badge&logo=docker&logoColor=white" alt=""/>
+    <img src="https://img.shields.io/badge/Railway-%23000000.svg?&style=for-the-badge&logo=railway&logoColor=white" alt=""/>
 </div>
 
 <div align="center">
@@ -37,6 +39,8 @@ browser with this website and Diablo 2 game instance at the same time. This way 
 the dates.
 
 ## Development Setup
+
+### Without Docker
 
 Create `.env` file with the following content:
 
@@ -92,12 +96,83 @@ coverage run manage.py test
 coverage report -m
 ```
 
-## Deployment to Heroku
+### With Docker
+
+Create `.env` file with the following content:
+
+```dotenv
+DJANGO_SETTINGS_MODULE=core.settings.dev
+
+SECRET_KEY=...
+
+DB_NAME=postgres
+DB_USER=postgres
+DB_PASSWORD=postgres
+
+POSTGRES_DB=${DB_NAME}
+POSTGRES_USER=${DB_USER}
+POSTGRES_PASSWORD=${DB_PASSWORD}
+```
+
+Make sure Docker Engine is running.
+
+While in root directory, build docker images and run them with docker-compose. This might take up to few minutes.
+Rebuilding image is crucial after installing new packages via pipenv.
+
+Bringing up containers (with optional --build flag to rebuild images)
+
+```shell
+docker compose up --build
+```
+
+Bringing down containers with optional -v flag removes all attached volumes and invalidates caches.
+
+```shell
+docker compose down
+```
+
+Run commands inside docker, e.g.:
+
+```shell
+docker exec -it backend python manage.py makemigrations
+
+docker exec -it backend python manage.py migrate
+
+docker exec -it backend python manage.py createsuperuser
+```
+
+Application will be up at `127.0.0.1:8000`.
+
+## Deployment to Railway
+
+Go to https://railway.app/dashboard and create a new blank project.
+
+Add Postgres database service.
+
+Add backend service deployed from GitHub Repo.
+
+Set environment variables in backend service:
+
+```dotenv
+RAILWAY_DOCKERFILE_PATH=Dockerfile.prod
+PORT=8000
+SECRET_KEY=...
+PRODUCTION_HOST=<app_name>.up.railway.app
+DJANGO_SETTINGS_MODULE=core.settings.prod
+DATABASE_URL=${{<postgres_service_name>.DATABASE_URL}}
+```
+
+Add start command in deploy section:
+```shell
+gunicorn core.wsgi:application --bind 0.0.0.0:8000
+```
+
+## Deployment to Heroku (Deprecated)
 
 Set env variables in dashboard settings or with CLI
 
 ```dotenv
-SECRET_KEY=
+SECRET_KEY=...
 PRODUCTION_HOST=<app_name>.herokuapp.com
 DJANGO_SETTINGS_MODULE=core.settings.prod
 ```
