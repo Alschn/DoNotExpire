@@ -36,9 +36,11 @@
         {% for account in user_accounts %}
           <div class="account-box">
             <div class="account-header">
-              <span>{{ account }}:</span>
+              <span>{{ account.name }}:</span>
               <span>
-                <a class="float-right del-acc" href="{% url 'account-detail-delete' pk=account.pk %}">Delete Account</a>
+                <a class="float-right del-acc" href="{% url 'account-detail-delete' pk=account.pk %}">
+                  Delete Account
+                </a>
               </span>
             </div>
 
@@ -46,37 +48,55 @@
               <h2 id="char-name-label-{{ account.id }}">{{ account.name }}</h2>
             </div>
 
-            <div class="row custom-border chars-box" id="chars-box-{{ account.id }}">
+            <div class="row custom-border chars-box" data-account-id="{{ account.id }}">
               {% for char in account.chars.all %}
                 <div
-                    class="col col-char clickable col-6"
+                    class="col col-6 col-char clickable"
                     onclick="changeText('{{ char.name }}', '{{ account.id }}')"
-                    id="{{ account.name }}" data-char="{{ char.name }}"
+                    data-account-name="{{ account.name }}"
+                    data-character-name="{{ char.name }}"
+                    data-selected="false"
+                    aria-selected="false"
                 >
                   <div class="char-img">
                     <img src="{% get_static_prefix %}{{ char.get_class_image }}" alt="">
                   </div>
 
-                  <div class="char-data" data-char="{{ char.name }}">
+                  <div class="char-data" data-character-name="{{ char.name }}">
                     {% if char.hardcore %}
-                      <span class="hardcore" onclick="createModalOnClick('{{ char.name }}')">{{ char.name }}</span><br>
+                      <span class="hardcore" onclick="createModalOnClick('{{ char.name }}')">
+                        {{ char.name }}
+                      </span>
+                      <br>
                     {% else %}
-                      <span onclick="createModalOnClick('{{ char.name }}')">{{ char.name }}</span><br>
+                      <span onclick="createModalOnClick('{{ char.name }}')">
+                        {{ char.name }}
+                      </span>
+                      <br>
                     {% endif %}
 
-                    <span class="char-info">Level {{ char.level }} {{ char.char_class }}</span><br>
+                    <span class="char-info">
+                      Level {{ char.level }} {{ char.char_class }}
+                    </span>
+                    <br>
 
                     {% if char.expansion %}
-                      <span class="expansion">Expansion character</span><br>
+                      <span class="expansion">
+                        Expansion character
+                      </span>
+                      <br>
                     {% endif %}
 
                     {% if char.ladder %}
-                      Ladder character<br>
+                      <span>Ladder character</span>
+                      <br>
                     {% endif %}
 
                     {% if char.last_visited %}
                       {% if not char.expired and char.expires > 0 and char.expires <= 60 %}
-                        <span class="char-info char-expires">Expires in {{ char.expires }} days</span>
+                        <span class="char-info char-expires">
+                          Expires in {{ char.expires }} days
+                        </span>
                       {% elif not char.expired and char.expires > 60 %}
                       {% else %}
                         <span class="hardcore">Character expired</span>
@@ -84,7 +104,7 @@
                     {% endif %}
 
                     {% if not char.expired and char.expires > 0 %}
-                      <form action="" data-char-name="{{ char.name }}" class="char-bump-form">
+                      <form action="" data-character-name="{{ char.name }}" class="char-bump-form">
                         {% csrf_token %}
                         <button class="btn-update" type="submit" name="update_date">Update</button>
                       </form>
@@ -100,7 +120,7 @@
                   {% csrf_token %}
                   <button
                       class="btn-char btn-char-create float-left"
-                      data-char-count="{{ account.chars.all.count }}"
+                      data-characters-count="{{ account.chars.all.count }}"
                   >
                     Create New<br>Character
                   </button>
@@ -108,15 +128,15 @@
               </div>
 
               <div class="col button-box">
-                <input type="hidden" name="char_id" value="" id="{{ account.name }}">
+                <input type="hidden" name="char_id" value="" data-account-name="{{ account.name }}">
                 <button
-                    class="btn-char btn-char-delete btn-char-disabled float-right"
-                    data-acc="{{ account.name }}"
                     type="button"
-                    disabled
+                    class="btn-char btn-char-delete btn-char-disabled float-right"
+                    data-account-name="{{ account.name }}"
                     data-toggle="modal"
-                    data-target="#ModalCenter"
+                    data-target="#delete-modal"
                     onclick="setCharDelete(this)"
+                    disabled
                 >
                   Delete <br>Character
                 </button>
@@ -127,8 +147,12 @@
 
         <!-- Delete character modal -->
         <div
-            class="modal fade" id="ModalCenter" tabindex="-1"
-            role="dialog" aria-labelledby="deleteModal" aria-hidden="true"
+            class="modal fade"
+            id="delete-modal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="deleteModal"
+            aria-hidden="true"
         >
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -138,15 +162,17 @@
               </div>
               <div class="modal-buttons">
                 <button type="button" class="btn-char btn-left" data-dismiss="modal">No</button>
-
-                <form action="" enctype="multipart/form-data"
-                      class="char-delete-form">
+                <form
+                    action=""
+                    enctype="multipart/form-data"
+                    class="char-delete-form"
+                >
                   {% csrf_token %}
                   <input type="hidden" name="char_id" value="" id="modal-delete">
                   <button
                       type="submit"
                       class="btn-char btn-right"
-                      data-acc="{{ account.name }}"
+                      data-account-name="{{ account.name }}"
                   >
                     Yes
                   </button>
@@ -219,7 +245,7 @@
         res => res.json()
       ).then((data) => {
         const {message, character: {expired}} = data;
-        const charData = document.querySelector(`.char-data[data-char=${charName}]`);
+        const charData = document.querySelector(`.char-data[data-character-name='${charName}]'`);
         const charInfo = charData.querySelector('.char-info.char-expires');
         const alertBox = document.getElementById('message-alert');
         // create new alert, set its attributes, classname and text
@@ -253,13 +279,13 @@
         // close delete modal
         $('#ModalCenter').modal('hide');
         // get char and remove it
-        const charToDelete = document.querySelector(`.col-char[data-char="${charName}"]`);
+        const charToDelete = document.querySelector(`.col-char[data-character-name="${charName}"]`);
         const parent = charToDelete.parentNode;
         // find button in the current account box
         const accBox = parent.parentElement;
         const createButton = accBox.querySelector('.btn-char-create');
         // if account was full previously, enable the create button
-        const prevCharCount = Number(createButton.getAttribute('data-char-count'));
+        const prevCharCount = Number(createButton.getAttribute('data-characters-count'));
         if (prevCharCount === 18) {
           createButton.disabled = false;
           createButton.classList.remove('btn-char-disabled');
@@ -284,7 +310,7 @@
     document.querySelectorAll(".char-bump-form").forEach((form) => {
       form.addEventListener('submit', (event) => {
         event.preventDefault();
-        const charName = form.attributes['data-char-name'].value;
+        const charName = form.attributes['data-character-name'].value;
         bumpLastVisited(charName);
       });
     });
