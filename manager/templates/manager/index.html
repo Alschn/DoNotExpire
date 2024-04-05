@@ -245,7 +245,7 @@
         res => res.json()
       ).then((data) => {
         const {message, character: {expired}} = data;
-        const charData = document.querySelector(`.char-data[data-character-name='${charName}]'`);
+        const charData = document.querySelector(`.char-data[data-character-name='${charName}']`);
         const charInfo = charData.querySelector('.char-info.char-expires');
         const alertBox = document.getElementById('message-alert');
         // create new alert, set its attributes, classname and text
