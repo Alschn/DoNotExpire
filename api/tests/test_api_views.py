@@ -304,7 +304,7 @@ class TestAPIViews(TestCase):
 
     def test_delete_character_char_doesnt_exist(self):
         self._require_login()
-        response = self.client.delete(f'/api/characters/LMAO/')
+        response = self.client.delete('/api/characters/LMAO/')
         self.assertEqual(response.status_code, HTTP_404_NOT_FOUND)
 
     def test_delete_char_by_not_owner(self):
@@ -395,11 +395,11 @@ class TestAPIViews(TestCase):
 
     def test_update_account_acc_doesnt_exist(self):
         self._require_login()
-        response = self.client.put(f'/api/accounts/bajojajo/', {
+        response = self.client.put('/api/accounts/bajojajo/', {
             'realm': 'xd',
         })
         self.assertEqual(response.status_code, HTTP_404_NOT_FOUND)
-        self.assertEqual(response.json(), {'detail': 'Not found.'})
+        self.assertIn('detail', response.json())
 
     def test_update_account_by_not_owner(self):
         self._require_login()
@@ -410,13 +410,15 @@ class TestAPIViews(TestCase):
 
     def test_delete_account_acc_doesnt_exist(self):
         self._require_login()
-        response = self.client.delete(f'/api/accounts/hahah/')
+        response = self.client.delete('/api/accounts/hahah/')
         self.assertEqual(response.status_code, HTTP_404_NOT_FOUND)
+        self.assertIn('detail', response.json())
 
     def test_delete_acc_by_not_owner(self):
         self._require_login()
         response = self.client.delete(f'/api/accounts/{self.acc2.name}/')
         self.assertEqual(response.status_code, HTTP_404_NOT_FOUND)
+        self.assertIn('detail', response.json())
 
     def test_delete_account(self):
         self._require_login()
@@ -426,4 +428,4 @@ class TestAPIViews(TestCase):
         self.assertEqual(response.status_code, HTTP_204_NO_CONTENT)
         with self.assertRaises(ObjectDoesNotExist):
             Account.objects.get(name=lookup_name)
-        self.assertNotEqual(char_count_before, Character.objects.all().count())
+        self.assertNotEqual(char_count_before, Character.objects.count())

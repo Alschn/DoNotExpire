@@ -134,11 +134,11 @@ docker compose down
 Run commands inside docker, e.g.:
 
 ```shell
-docker exec -it backend python manage.py makemigrations
+docker exec -it donotexpire-backend python manage.py makemigrations
 
-docker exec -it backend python manage.py migrate
+docker exec -it donotexpire-backend python manage.py migrate
 
-docker exec -it backend python manage.py createsuperuser
+docker exec -it donotexpire-backend python manage.py createsuperuser
 ```
 
 Application will be up at `127.0.0.1:8000`.
