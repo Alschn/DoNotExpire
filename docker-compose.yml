@@ -1,6 +1,6 @@
 services:
   backend:
-    container_name: backend
+    container_name: donotexpire-backend
     build: .
     stdin_open: true
     tty: true
@@ -13,7 +13,7 @@ services:
     command: python manage.py runserver 0.0.0.0:8000
 
   postgres_db:
-    container_name: postgres_db
+    container_name: donotexpire-postgres-db
     image: postgres:15.0-alpine
     env_file:
       - .env
