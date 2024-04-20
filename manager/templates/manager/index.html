@@ -277,7 +277,8 @@
     const deleteCharacter = (charName) => {
       CharactersAPI.delete(charName).then(() => {
         // close delete modal
-        $('#ModalCenter').modal('hide');
+        $('#delete-modal').modal('hide');
+
         // get char and remove it
         const charToDelete = document.querySelector(`.col-char[data-character-name="${charName}"]`);
         const parent = charToDelete.parentNode;
